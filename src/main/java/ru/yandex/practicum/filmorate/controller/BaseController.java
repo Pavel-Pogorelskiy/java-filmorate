@@ -8,10 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseController <T extends BaseUnit> {
+public abstract class BaseController<T extends BaseUnit> {
 
-    private final Map<Integer, T>memory = new HashMap<>();
+    private final Map<Integer, T> memory = new HashMap<>();
     private int generateId;
+
     public List<T> getAll() {
         return new ArrayList<>(memory.values());
     }
