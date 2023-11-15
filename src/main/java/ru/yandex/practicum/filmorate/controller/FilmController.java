@@ -12,8 +12,8 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/films")
-public class FilmController extends BaseController <Film> {
-    private final static LocalDate DATE_FIRST_RELEASE = LocalDate.of(1895, 12, 28);
+public class FilmController extends BaseController<Film> {
+    private final LocalDate DATE_FIRST_RELEASE = LocalDate.of(1895, 12, 28);
 
     @GetMapping
     @Override
