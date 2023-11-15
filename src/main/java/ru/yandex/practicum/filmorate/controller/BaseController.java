@@ -1,10 +1,8 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.NotFoundDataException;
 import ru.yandex.practicum.filmorate.model.BaseUnit;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,22 +10,20 @@ import java.util.Map;
 
 public abstract class BaseController <T extends BaseUnit> {
 
-    private final Map<Integer, T> memory = new HashMap<>();
-
+    private final Map<Integer, T>memory = new HashMap<>();
     private int generateId;
-
     public List<T> getAll() {
         return new ArrayList<>(memory.values());
     }
 
-    public T create (T data) {
+    public T create(T data) {
         validate(data);
         data.setId(++generateId);
         memory.put(data.getId(),data);
         return data;
     }
 
-    public T uptade (T data) {
+    public T uptade(T data) {
         if (!memory.containsKey(data.getId())) {
             throw new NotFoundDataException("Данные не найдены");
         }
@@ -36,7 +32,7 @@ public abstract class BaseController <T extends BaseUnit> {
         return data;
     }
 
-    public abstract void validate (T data);
+    public abstract void validate(T data);
 
     public Map<Integer, T> getMemory() {
         return memory;
