@@ -9,10 +9,10 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
-@EqualsAndHashCode(callSuper = true )
+@EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
-public class Film extends BaseUnit {
+public class Film extends BaseUnit{
     @NotEmpty
     private String name;
     @Size(max = 200)
