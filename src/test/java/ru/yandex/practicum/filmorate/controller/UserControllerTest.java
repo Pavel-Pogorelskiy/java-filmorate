@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,101 +11,66 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.ResourceUtils;
-import ru.yandex.practicum.filmorate.exception.ValidateDateException;
-import ru.yandex.practicum.filmorate.model.Film;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-class FilmControllerTest {
-    private FilmController filmController;
+class UserControllerTest {
+    private UserController userController;
     @Autowired
     private MockMvc mockMvc;
-    public static final String PATH = "/films";
+    public static final String PATH = "/users";
 
     @BeforeEach
     void setUp() {
-        filmController = new FilmController();
+        userController = new UserController();
     }
 
     @Test
-    void validateTimeReleaseException() {
-        Film film = Film.builder()
-                .name("Film")
-                .description("Description")
-                .releaseDate(LocalDate.of(1800, 1, 1))
-                .duration(100)
-                .build();
-        Assertions.assertThrows(
-                ValidateDateException.class,
-                () -> filmController.validate(film), "Не правильная работа валидации");
-    }
-
-    @Test
-    void validateTimeReleaseNormal() {
-        Film film = Film.builder()
-                .name("Film")
-                .description("Description")
-                .releaseDate(LocalDate.of(1900, 1, 1))
-                .duration(100)
-                .build();
-        filmController.validate(film);
-    }
-
-    @Test
-    void validateNullObjectFilm() {
-        Film film = new Film();
-        assertThrows(
-                NullPointerException.class,
-                () -> filmController.create(film), "Валидация пропускает объект с null полями");
-    }
-
-    @Test
-    void createNormalFilm() throws Exception {
+    void createNormalUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post(PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(getContentFromFile("controller/request/NormalFilm.json")))
+                        .content(getContentFromFile("controller/request/NormalUser.json")))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(
-                        getContentFromFile("controller/response/NormalFilm.json")));
+                        getContentFromFile("controller/response/NormalUser.json")));
     }
 
     @Test
-    void validateFilmNameEmpty() throws Exception {
+    void validateUserErrorEmail() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post(PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(getContentFromFile("controller/request/FilmNameEmpty.json")))
+                        .content(getContentFromFile("controller/request/UserErrorEmail.json")))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 
     @Test
-    void validateFilmDescriptionSize201() throws Exception {
+    void validateUserEmptyEmail() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post(PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(getContentFromFile("controller/request/FilmDescription201.json")))
+                        .content(getContentFromFile("controller/request/UserEmptyEmail.json")))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 
     @Test
-    void validateFilmReleaseDateNull() throws Exception {
+    void validateUserBlankLogin() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post(PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(getContentFromFile("controller/request/FilmNullReleaseDate.json")))
+                        .content(getContentFromFile("controller/request/UserLoginBlank.json")))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 
     @Test
-    void validateFilmDuration0() throws Exception {
+    void validateUserBirthdayFuture() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post(PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(getContentFromFile("controller/request/FilmDuration0.json")))
+                        .content(getContentFromFile("controller/request/UserBirthdayFuture.json")))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 
