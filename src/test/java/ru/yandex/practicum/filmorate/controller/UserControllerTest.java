@@ -75,7 +75,7 @@ class UserControllerTest {
     }
 
     @Test
-    void EmptyRequest() throws Exception {
+    void emptyRequest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/"))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
