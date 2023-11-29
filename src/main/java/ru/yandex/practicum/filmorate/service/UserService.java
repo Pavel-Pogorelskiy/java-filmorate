@@ -32,6 +32,7 @@ public class UserService {
         storage.uptade(user);
         storage.uptade(friend);
     }
+
     public List<User> getFriend(int id) {
         storage.validateId(id);
         List<User> friend = storage.getAll().stream()
@@ -55,7 +56,7 @@ public class UserService {
         storage.uptade(friend);
     }
 
-    public List <User> commonFriends(int id, int otherId) {
+    public List<User> commonFriends(int id, int otherId) {
         storage.validateId(id);
         storage.validateId(otherId);
         if (storage.get(id).getFriends().size() == 0 && storage.get(otherId).getFriends().size() == 0) {
@@ -64,7 +65,7 @@ public class UserService {
         Set<Integer> userFriends = new HashSet<>(storage.get(id).getFriends());
         Set<Integer> friendFriends = new HashSet<>(storage.get(otherId).getFriends());
         userFriends.retainAll(friendFriends);
-        List <User> commonFriends = storage.getAll().stream()
+        List<User> commonFriends = storage.getAll().stream()
                 .filter(it -> userFriends.contains(it.getId()))
                 .collect(Collectors.toList());
         return commonFriends;
