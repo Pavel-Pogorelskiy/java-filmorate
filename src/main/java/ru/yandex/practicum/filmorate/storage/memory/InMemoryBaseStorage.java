@@ -12,6 +12,7 @@ import java.util.Map;
 public abstract class InMemoryBaseStorage<T extends BaseUnit> implements AbstractStorage<T> {
     private final Map<Integer, T> memory = new HashMap<>();
     private int generateId;
+
     @Override
     public T create(T data) {
         data.setId(++generateId);
