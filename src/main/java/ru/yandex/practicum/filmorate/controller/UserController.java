@@ -18,6 +18,7 @@ public class UserController {
     UserService userService;
     @Autowired
     InMemoryUserStorage userStorage;
+
     @GetMapping
     public List<User> getAll() {
         log.info("Получение списка всех пользователей {}", userStorage.getAll());
@@ -46,7 +47,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}/friends")
-    public List<User> getFriends(@PathVariable int id){
+    public List<User> getFriends(@PathVariable int id) {
         log.info("Получение списка друзей {}", userService.getFriend(id));
         return userService.getFriend(id);
     }
@@ -62,7 +63,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends(@PathVariable int id,@PathVariable int otherId){
+    public List<User> getCommonFriends(@PathVariable int id,@PathVariable int otherId) {
         log.info("Получение списка общих друзей {}", userService.commonFriends(id, otherId));
         return userService.commonFriends(id, otherId);
     }
