@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.memory.InMemoryBaseStorage;
 import ru.yandex.practicum.filmorate.storage.memory.InMemoryUserStorage;
 
 import javax.validation.Valid;
