@@ -15,9 +15,9 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
-    InMemoryUserStorage userStorage;
+    private InMemoryUserStorage userStorage;
 
     @GetMapping
     public List<User> getAll() {

@@ -15,19 +15,14 @@ import java.util.stream.Collectors;
 @Service
 public class FilmService {
     @Autowired
-    FilmStorage filmStorage;
+    private FilmStorage filmStorage;
     @Autowired
-    UserStorage userStorage;
+    private UserStorage userStorage;
 
     public void addLike(int id, int userId) {
         User user = userStorage.get(userId);
         Film film = filmStorage.get(id);
-        Set<Integer> filmLikes;
-        if (film.getLikes() == null) {
-            filmLikes = new HashSet<>();
-        } else {
-            filmLikes = film.getLikes();
-        }
+        Set<Integer> filmLikes = film.getLikes();
         filmLikes.add(user.getId());
         film.setLikes(filmLikes);
         filmStorage.uptade(film);

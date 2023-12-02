@@ -13,24 +13,29 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+    private final static String REMOVE_FRIEND = "remove";
+    private final static String ADD_FRIEND = "add";
     @Autowired
-    InMemoryUserStorage storage;
+    private InMemoryUserStorage storage;
 
     public void addFriend(int id, int friendId) {
         storage.validateId(id);
         storage.validateId(friendId);
-        User user = storage.get(id);
-        User friend = storage.get(friendId);
-        Set<Integer> userFriends;
-        Set<Integer> friendFriends;
-        userFriends = user.getFriends();
-        friendFriends = friend.getFriends();
-        userFriends.add(friendId);
-        friendFriends.add(id);
-        user.setFriends(userFriends);
-        friend.setFriends(friendFriends);
-        storage.uptade(user);
-        storage.uptade(friend);
+        storage.uptade(uptadeFriend(storage.get(id), friendId, ADD_FRIEND));
+        storage.uptade(uptadeFriend(storage.get(friendId), id, ADD_FRIEND));
+    }
+
+    public User uptadeFriend(User user, int idFriend, String operation) {
+        Set<Integer> userFriends = user.getFriends();
+        if (operation.equals(ADD_FRIEND)) {
+            userFriends.add(idFriend);
+            user.setFriends(userFriends);
+        }
+        if (operation.equals(REMOVE_FRIEND)) {
+            userFriends.remove(user.getId());
+            user.setFriends(userFriends);
+        }
+        return user;
     }
 
     public List<User> getFriend(int id) {
@@ -44,16 +49,8 @@ public class UserService {
     public void deleteFriend(int id, int friendId) {
         storage.validateId(id);
         storage.validateId(friendId);
-        User user = storage.get(id);
-        User friend = storage.get(friendId);
-        Set<Integer> userFriends = user.getFriends();
-        Set<Integer> friendFriends = friend.getFriends();
-        userFriends.remove(friendId);
-        friendFriends.remove(id);
-        user.setFriends(userFriends);
-        friend.setFriends(friendFriends);
-        storage.uptade(user);
-        storage.uptade(friend);
+        storage.uptade(uptadeFriend(storage.get(id), friendId, REMOVE_FRIEND));
+        storage.uptade(uptadeFriend(storage.get(friendId), id, REMOVE_FRIEND));
     }
 
     public List<User> commonFriends(int id, int otherId) {

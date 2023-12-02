@@ -18,9 +18,9 @@ import java.util.List;
 public class FilmController {
 
     @Autowired
-    FilmService filmService;
+    private FilmService filmService;
     @Autowired
-    InMemoryFilmStorage filmStorage;
+    private InMemoryFilmStorage filmStorage;
     private static final LocalDate DATE_FIRST_RELEASE = LocalDate.of(1895, 12, 28);
 
     @GetMapping

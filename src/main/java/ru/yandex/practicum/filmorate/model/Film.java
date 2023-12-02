@@ -24,6 +24,7 @@ public class Film extends BaseUnit {
     private LocalDate releaseDate;
     @Min(1)
     private int duration;
+    @NotNull
     @Builder.Default
     private Set<Integer> likes = new HashSet<>();
 }
