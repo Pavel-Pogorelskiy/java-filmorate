@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private final static String REMOVE_FRIEND = "remove";
-    private final static String ADD_FRIEND = "add";
+    private static final String REMOVE_FRIEND = "remove";
+    private static final String ADD_FRIEND = "add";
     @Autowired
     private InMemoryUserStorage storage;
 
