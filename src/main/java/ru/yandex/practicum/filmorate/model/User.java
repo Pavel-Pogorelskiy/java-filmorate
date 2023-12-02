@@ -24,6 +24,7 @@ public class User extends BaseUnit {
     private String name;
     @PastOrPresent
     private LocalDate birthday;
+    @NotNull
     @Builder.Default
     private Set<Integer> friends = new HashSet<>();
 }
