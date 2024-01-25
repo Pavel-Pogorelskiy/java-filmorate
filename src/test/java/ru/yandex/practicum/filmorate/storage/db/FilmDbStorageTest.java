@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +83,7 @@ class FilmDbStorageTest {
                         .id(2)
                         .build())
                 .build();
-        Film uptadeFilm= Film.builder()
+        Film uptadeFilm = Film.builder()
                 .id(1)
                 .name("Барби")
                 .description("Все розовое")
@@ -145,7 +144,7 @@ class FilmDbStorageTest {
                         .id(2)
                         .build())
                 .build();
-        Film newFilm2= Film.builder()
+        Film newFilm2 = Film.builder()
                 .id(2)
                 .name("Барби")
                 .description("Все розовое")
@@ -185,7 +184,7 @@ class FilmDbStorageTest {
                         .id(2)
                         .build())
                 .build();
-        Film newFilm2= Film.builder()
+        Film newFilm2 = Film.builder()
                 .id(2)
                 .name("Барби")
                 .description("Все розовое")

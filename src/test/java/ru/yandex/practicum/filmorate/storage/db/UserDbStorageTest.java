@@ -112,7 +112,6 @@ class UserDbStorageTest {
                 .isNotNull()
                 .usingRecursiveComparison()
                 .isEqualTo(uptadeUser);
-
     }
 
     @Test
