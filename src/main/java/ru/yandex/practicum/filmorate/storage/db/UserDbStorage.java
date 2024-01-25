@@ -19,6 +19,7 @@ import java.util.Map;
 @Primary
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public User create(User data) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())

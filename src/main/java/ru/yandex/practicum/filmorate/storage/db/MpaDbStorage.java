@@ -15,6 +15,7 @@ import java.util.List;
 @Primary
 public class MpaDbStorage implements MpaStorage {
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public Mpa create(Mpa data) {
         throw new UnsupportedOperationException();

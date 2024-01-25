@@ -14,6 +14,7 @@ import java.util.List;
 @Primary
 public class FriendDbStorage implements FriendStorage {
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public void addFriend(int userId, int friendId) {
         jdbcTemplate.update("Insert into friends values (?,?)", userId, friendId);

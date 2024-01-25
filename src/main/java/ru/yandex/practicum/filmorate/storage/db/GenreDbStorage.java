@@ -15,6 +15,7 @@ import java.util.List;
 @Primary
 public class GenreDbStorage implements GenreStorage {
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public Genre create(Genre data) {
         throw new UnsupportedOperationException();

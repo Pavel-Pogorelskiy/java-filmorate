@@ -17,6 +17,7 @@ public class FilmService {
     private UserDbStorage userStorage;
     @Autowired
     private LikesDbStorage likesStorage;
+
     public void addLike(int filmId, int userId) {
         userStorage.validateId(userId);
         filmStorage.validateId(filmId);
