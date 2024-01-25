@@ -28,7 +28,8 @@ public class FilmDbStorage implements FilmStorage {
                 .withTableName("films")
                 .usingGeneratedKeyColumns("film_id");
         Map<String, Object> params = Map.of("name", data.getName(), "description", data.getDescription(),
-                "releaseDate", data.getReleaseDate(), "duration", data.getDuration(), "mpa", data.getMpa().getId());
+                "releaseDate", data.getReleaseDate(), "duration", data.getDuration(), "mpa",
+                data.getMpa().getId());
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
         data.setId(id.intValue());
         if (data.getGenres().size() > 0) {
@@ -80,7 +81,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getAll() {
-        List <Film> films = jdbcTemplate.query("select f.film_id, f.name, f.description, " +
+        List<Film> films = jdbcTemplate.query("select f.film_id, f.name, f.description, " +
                 "f.releaseDate, f.duration, mp.mpa_id, mp.name as mpa_name from films as f " +
                 "join mpa as mp on f.mpa = mp.mpa_id order by f.film_id asc",FilmDbStorage::createFilm);
         for (int i = 0; i < films.size(); i++) {
@@ -103,7 +104,8 @@ public class FilmDbStorage implements FilmStorage {
     public void validateId(int id) {
         List<Film> films = jdbcTemplate.query("Select f.film_id, f.name, f.description,\n" +
                 "          f.releaseDate, f.duration, mp.mpa_id, mp.name as mpa_name from films as f\n" +
-                "                join mpa as mp on f.mpa = mp.mpa_id Where f.film_id = ?", FilmDbStorage::createFilm, id);
+                "                join mpa as mp on f.mpa = mp.mpa_id Where f.film_id = ?",
+                FilmDbStorage::createFilm, id);
         if (films.size() == 0) {
             throw new NotFoundDataException("Фильма с id = " + id + " не существует");
         }

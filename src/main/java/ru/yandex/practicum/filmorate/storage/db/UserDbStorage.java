@@ -43,7 +43,8 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User get(int id) {
         validateId(id);
-        List <User> users = jdbcTemplate.query("Select * From users Where user_id = ?",UserDbStorage::createUser, id);
+        List <User> users = jdbcTemplate.query("Select * From users Where user_id = ?",
+                UserDbStorage::createUser, id);
         if (users.size() != 1) {
             throw new NotFoundDataException("Пользователь больше или меньше одного");
         }
@@ -71,7 +72,8 @@ public class UserDbStorage implements UserStorage {
     }
 
     public void validateId(int id) {
-        List<User> users = jdbcTemplate.query("Select * From users Where user_id = ?",UserDbStorage::createUser, id);
+        List<User> users = jdbcTemplate.query("Select * From users Where user_id = ?",
+                UserDbStorage::createUser, id);
         if (users.size() == 0) {
             throw new NotFoundDataException("Пользователя с id = " + id + " не существует");
         }
