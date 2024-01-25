@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.db.MpaDbStorage;
 
 import java.util.List;
+
 @Service
 public class MpaService {
     @Autowired
