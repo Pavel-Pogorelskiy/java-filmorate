@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidateDateException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.memory.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.db.FilmDbStorage;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ public class FilmController {
     @Autowired
     private FilmService filmService;
     @Autowired
-    private InMemoryFilmStorage filmStorage;
+    private FilmDbStorage filmStorage;
     private static final LocalDate DATE_FIRST_RELEASE = LocalDate.of(1895, 12, 28);
 
     @GetMapping
@@ -44,7 +44,7 @@ public class FilmController {
 
     @GetMapping(value = "/{id}")
     public Film getFilmId(@PathVariable int id) {
-        log.info("Получение пользователя {}", filmStorage.get(id));
+        log.info("Получение фильма {}", filmStorage.get(id));
         return filmStorage.get(id);
     }
 
