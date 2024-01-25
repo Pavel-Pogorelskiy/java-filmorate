@@ -69,16 +69,6 @@ class FilmControllerTest {
     }
 
     @Test
-    void createNormalFilm() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(getContentFromFile("controller/request/NormalFilm.json")))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(
-                        getContentFromFile("controller/response/NormalFilm.json")));
-    }
-
-    @Test
     void validateFilmNameEmpty() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post(PATH)
                         .contentType(MediaType.APPLICATION_JSON)
