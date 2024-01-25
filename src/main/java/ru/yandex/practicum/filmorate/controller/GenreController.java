@@ -17,6 +17,7 @@ import java.util.List;
 public class GenreController {
     @Autowired
     private GenreService genreService;
+
     @GetMapping
     public List<Genre> getAll() {
         log.info("Получение списка всех жанров {}", genreService.getAll());
