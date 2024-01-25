@@ -71,7 +71,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     public void validateId(int id) {
-        List <User> users = jdbcTemplate.query("Select * From users Where user_id = ?",UserDbStorage::createUser, id);
+        List<User> users = jdbcTemplate.query("Select * From users Where user_id = ?",UserDbStorage::createUser, id);
         if (users.size() == 0) {
             throw new NotFoundDataException("Пользователя с id = " + id + " не существует");
         }

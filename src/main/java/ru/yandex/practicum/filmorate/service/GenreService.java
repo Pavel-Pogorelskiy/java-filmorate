@@ -12,7 +12,7 @@ public class GenreService {
     @Autowired
     private GenreDbStorage genreStorage;
 
-    public List <Genre> getAll() {
+    public List<Genre> getAll() {
         return genreStorage.getAll();
     }
 

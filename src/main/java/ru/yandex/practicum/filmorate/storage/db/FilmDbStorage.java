@@ -61,7 +61,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film get(int id) {
         validateId(id);
-        List <Film> films = jdbcTemplate.query("select f.film_id, f.name, f.description, " +
+        List<Film> films = jdbcTemplate.query("select f.film_id, f.name, f.description, " +
                 "f.releaseDate, f.duration, mp.mpa_id, mp.name as mpa_name from films as f " +
                 "join mpa as mp on f.mpa = mp.mpa_id " +
                 "where film_id = ?",FilmDbStorage::createFilm, id);
