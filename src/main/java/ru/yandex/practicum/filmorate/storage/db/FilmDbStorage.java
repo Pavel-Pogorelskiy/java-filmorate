@@ -175,7 +175,7 @@ public class FilmDbStorage implements FilmStorage {
                 .build();
     }
 
-    private List <Genre> addGenreDb(final List <Genre> genres, int filmId) {
+    private List<Genre> addGenreDb(final List<Genre> genres, int filmId) {
         jdbcTemplate.batchUpdate(
                 "insert into genre_link (film_id, genre_id) values (?, ?)",
                 new BatchPreparedStatementSetter() {
