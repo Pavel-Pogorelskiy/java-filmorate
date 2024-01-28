@@ -29,7 +29,8 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Genre get(int id) {
-         List<Genre> genre = jdbcTemplate.query("Select * From genre Where genre_id = ?",
+         List<Genre> genre = jdbcTemplate.query(
+                 "Select * From genre Where genre_id = ?",
                 (rs, rowNum) -> Genre.builder()
                 .id(rs.getInt("genre_id"))
                 .name(rs.getString("name"))
@@ -42,7 +43,8 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public List<Genre> getAll() {
-        return jdbcTemplate.query("Select * From genre",
+        return jdbcTemplate.query(
+                "Select * From genre",
                 (rs, rowNum) -> Genre.builder()
                 .id(rs.getInt("genre_id"))
                 .name(rs.getString("name"))

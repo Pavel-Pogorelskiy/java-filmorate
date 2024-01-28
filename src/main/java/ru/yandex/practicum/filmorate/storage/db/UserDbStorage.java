@@ -22,11 +22,15 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User create(User data) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
+        SimpleJdbcInsert simpleJdbcInsert =
+                new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("users")
                 .usingGeneratedKeyColumns("user_id");
-        Map<String, Object> params = Map.of("email", data.getEmail(), "name", data.getName(),
-                "login", data.getLogin(), "birthday", data.getBirthday());
+        Map<String, Object> params = Map.of(
+                "email", data.getEmail(),
+                "name", data.getName(),
+                "login", data.getLogin(),
+                "birthday", data.getBirthday());
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
         data.setId(id.intValue());
         return data;
@@ -35,15 +39,19 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User uptade(User data) {
         validateId(data.getId());
-        jdbcTemplate.update("update users Set name = ?, login = ?, email = ?, birthday = ? Where user_id = ?",
-                data.getName(), data.getLogin(), data.getEmail(), data.getBirthday(), data.getId());
+        jdbcTemplate.update(
+                "Update users Set name = ?, login = ?, " +
+                        "email = ?, birthday = ? Where user_id = ?",
+                data.getName(), data.getLogin(), data.getEmail(),
+                data.getBirthday(), data.getId());
         return data;
     }
 
     @Override
     public User get(int id) {
         validateId(id);
-        List<User> users = jdbcTemplate.query("Select * From users Where user_id = ?",
+        List<User> users = jdbcTemplate.query(
+                "Select * From users Where user_id = ?",
                 UserDbStorage::createUser, id);
         if (users.size() != 1) {
             throw new NotFoundDataException("Пользователь больше или меньше одного");
@@ -53,12 +61,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getAll() {
-        return jdbcTemplate.query("Select * From users",UserDbStorage::createUser);
+        return jdbcTemplate.query(
+                "Select * From users",UserDbStorage::createUser);
     }
 
     @Override
     public void delete(int id) {
-        jdbcTemplate.update("Delete From users Where user_id = ?", id);
+        jdbcTemplate.update(
+                "Delete From users Where user_id = ?", id);
     }
 
     static User createUser(ResultSet rs, int RowNum) throws SQLException {
@@ -72,7 +82,8 @@ public class UserDbStorage implements UserStorage {
     }
 
     public void validateId(int id) {
-        List<User> users = jdbcTemplate.query("Select * From users Where user_id = ?",
+        List<User> users = jdbcTemplate.query(
+                "Select * From users Where user_id = ?",
                 UserDbStorage::createUser, id);
         if (users.size() == 0) {
             throw new NotFoundDataException("Пользователя с id = " + id + " не существует");

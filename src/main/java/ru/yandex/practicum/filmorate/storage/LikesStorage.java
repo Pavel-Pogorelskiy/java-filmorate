@@ -9,5 +9,5 @@ public interface LikesStorage {
 
     void removeLikeFilm(int filmId, int userId);
 
-    public List<Film> getFilms(int count);
+    List<Film> getFilms(int count);
 }

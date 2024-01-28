@@ -22,8 +22,10 @@ public class FriendDbStorage implements FriendStorage {
 
     @Override
     public List<User> getFriend(int userId) {
-        return jdbcTemplate.query("Select * From users As u " +
-                "Where u.user_id In (Select f.friends_id From friends As f Where f.user_id = ?)",
+        return jdbcTemplate.query(
+                "Select * From users As u " +
+                        "Where u.user_id In (Select f.friends_id " +
+                        "From friends As f Where f.user_id = ?)",
                 (rs, rowNum) -> User.builder()
                         .id(rs.getInt("user_id"))
                         .name(rs.getString("name"))
@@ -35,14 +37,20 @@ public class FriendDbStorage implements FriendStorage {
 
     @Override
     public void deleteFriend(int userId, int friendId) {
-        jdbcTemplate.update("Delete From friends Where user_id = ? And friends_id = ? ", userId, friendId);
+        jdbcTemplate.update(
+                "Delete From friends " +
+                        "Where user_id = ? And friends_id = ?",
+                userId, friendId);
     }
 
     @Override
     public List<User> commonFriends(int userId, int friendId) {
-        return jdbcTemplate.query("select * from users where users.user_id in (Select fr.friends_id " +
-                "From friends as fr Where fr.friends_id in (Select f.friends_id From friends as f " +
-                "Where f.user_id = ?) and fr.user_id = ?)",
+        return jdbcTemplate.query("select * from users " +
+                        "Where users.user_id in " +
+                        "(Select fr.friends_id From friends as fr " +
+                        "Where fr.friends_id in " +
+                        "(Select f.friends_id From friends as f " +
+                        "Where f.user_id = ?) and fr.user_id = ?)",
                 (rs, rowNum) -> User.builder()
                         .id(rs.getInt("user_id"))
                         .name(rs.getString("name"))
