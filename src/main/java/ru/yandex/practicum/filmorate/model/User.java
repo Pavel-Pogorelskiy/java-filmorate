@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,5 +27,6 @@ public class User extends BaseUnit {
     private LocalDate birthday;
     @NotNull
     @Builder.Default
+    @JsonIgnore
     private Set<Integer> friends = new HashSet<>();
 }
