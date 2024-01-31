@@ -7,11 +7,8 @@ import ru.yandex.practicum.filmorate.storage.db.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.db.LikesDbStorage;
 import ru.yandex.practicum.filmorate.storage.db.UserDbStorage;
 
-import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 @Service
 public class FilmService {
@@ -38,9 +35,7 @@ public class FilmService {
         return likesStorage.getFilms(count);
     }
 
-    public Set<Film> getCommonFilms(int userId, int friendId) throws SQLException {
-        Set<Film> commonFilms = new TreeSet<>(Comparator.comparing(Film::countLikes).reversed());
-        commonFilms.addAll(filmStorage.getCommonFilms(userId, friendId));
-        return commonFilms;
+    public Set<Film> getCommonFilms(int userId, int friendId) {
+        return Set.copyOf(filmStorage.getCommonFilms(userId, friendId));
     }
 }

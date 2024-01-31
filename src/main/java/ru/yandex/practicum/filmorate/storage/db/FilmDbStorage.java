@@ -199,6 +199,7 @@ public class FilmDbStorage implements FilmStorage {
                 "JOIN mpa as mp on f.mpa = mp.mpa_id " +
                 "LEFT JOIN genre_link gl ON gl.film_id = f.film_id " +
                 "LEFT JOIN genre g on g.genre_id = gl.genre_id " +
+                "LEFT JOIN likes as l on f.film_id = l.film_id " +
                 "WHERE f.film_id IN ( " +
                 "SELECT l.film_id " +
                 "FROM likes as l " +
@@ -207,7 +208,8 @@ public class FilmDbStorage implements FilmStorage {
                 "SELECT l.film_id " +
                 "FROM likes as l " +
                 "WHERE user_id = ? ) " +
-                "group by f.name";
+                "group by f.film_id " +
+                "order by count(l.user_id) desc";
         return jdbcTemplate.query(sql, FilmDbStorage::createFilm, userId, friendId);
     }
 }
