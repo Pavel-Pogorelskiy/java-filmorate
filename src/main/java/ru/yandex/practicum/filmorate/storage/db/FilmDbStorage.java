@@ -212,7 +212,7 @@ public class FilmDbStorage implements FilmStorage {
         return genreMap;
     }
 
-    static public List<Film> fillGenres(List<Film> films, JdbcTemplate jdbcTemplate) {
+    public static List<Film> fillGenres(List<Film> films, JdbcTemplate jdbcTemplate) {
 
         if(films.isEmpty()) {
             return films;
