@@ -46,7 +46,6 @@ public class FilmDbStorage implements FilmStorage {
             addFilmDirector(data);
         }
         return data;
-        return get(id.intValue());
     }
 
     @Override
@@ -96,6 +95,7 @@ public class FilmDbStorage implements FilmStorage {
                         "(select films.film_id from films where film_id = ?)",
                 FilmDbStorage::createGenre, id);
         films.get(0).setGenres(genres);
+        films.get(0).setDirectors(getFilmDirectors(id));
         return films.get(0);
     }
 
