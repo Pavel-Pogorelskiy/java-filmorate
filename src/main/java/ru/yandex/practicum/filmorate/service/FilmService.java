@@ -41,6 +41,10 @@ public class FilmService {
         return likesStorage.getFilms(count);
     }
 
+    public Set<Film> getCommonFilms(int userId, int friendId) {
+        return Set.copyOf(filmStorage.getCommonFilms(userId, friendId));
+    }
+
     public Collection<Film> getFilmsByDirector(int directorId, String sortBy) {
         if (directorStorage.isRegistered(directorId)) {
             List<Film> films = filmStorage.getFilmsByDirector(directorId);
