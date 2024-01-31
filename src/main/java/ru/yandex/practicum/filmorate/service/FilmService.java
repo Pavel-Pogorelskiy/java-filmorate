@@ -33,4 +33,23 @@ public class FilmService {
     public List<Film> getFilms(int count) {
         return likesStorage.getFilms(count);
     }
+
+    public List<Film> getFilteredFilms(Integer count, Integer genreId, Integer year) {
+
+        if (genreId < 0) {
+            genreId = 0;
+        }
+
+        if (year < 0) {
+            year = 0;
+        }
+
+        if (genreId != 0 && year == 0) {
+            return likesStorage.getFilmsFilteredByGenre(count, genreId);
+        } else if (genreId == 0 && year != 0) {
+            return likesStorage.getFilmsFilteredByYear(count, year);
+        } else {
+            return likesStorage.getFilmsFilteredByGenreAndYear(count, genreId, year);
+        }
+    }
 }
