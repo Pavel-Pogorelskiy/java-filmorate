@@ -190,4 +190,24 @@ public class FilmDbStorage implements FilmStorage {
                 });
         return genres;
     }
+
+    public List<Film> getCommonFilms(int userId, int friendId) {
+        String sql = "SELECT f.film_id, f.name, f.description, f.releaseDate, " +
+                "f.duration, mp.mpa_id, mp.name as mpa_name, gl.genre_id, " +
+                "g.name AS genre_name " +
+                "FROM films as f " +
+                "JOIN mpa as mp on f.mpa = mp.mpa_id " +
+                "LEFT JOIN genre_link gl ON gl.film_id = f.film_id " +
+                "LEFT JOIN genre g on g.genre_id = gl.genre_id " +
+                "WHERE f.film_id IN ( " +
+                "SELECT l.film_id " +
+                "FROM likes as l " +
+                "WHERE user_id = ? ) " +
+                "AND f.film_id IN ( " +
+                "SELECT l.film_id " +
+                "FROM likes as l " +
+                "WHERE user_id = ? ) " +
+                "group by f.name";
+        return jdbcTemplate.query(sql, FilmDbStorage::createFilm, userId, friendId);
+    }
 }

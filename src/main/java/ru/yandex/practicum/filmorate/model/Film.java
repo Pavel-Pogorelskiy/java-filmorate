@@ -1,10 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.*;
@@ -33,4 +30,8 @@ public class Film extends BaseUnit {
     @NotNull
     @Builder.Default
     private List<Genre> genres = new ArrayList<>();
+
+    public int countLikes() {
+        return likes.size();
+    }
 }
