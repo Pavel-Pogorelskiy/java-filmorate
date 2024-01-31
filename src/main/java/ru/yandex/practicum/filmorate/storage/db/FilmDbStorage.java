@@ -214,7 +214,7 @@ public class FilmDbStorage implements FilmStorage {
 
     public static List<Film> fillGenres(List<Film> films, JdbcTemplate jdbcTemplate) {
 
-        if(films.isEmpty()) {
+        if (films.isEmpty()) {
             return films;
         }
 
