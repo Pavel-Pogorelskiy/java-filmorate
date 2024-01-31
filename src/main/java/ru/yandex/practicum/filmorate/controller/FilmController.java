@@ -76,4 +76,10 @@ public class FilmController {
             throw new ValidateDateException("Неверно указана дата релиза фильма. Минимальное значение 28.12.1895");
         }
     }
+
+    @DeleteMapping(value = "/{id}")
+    public void removeFilm(@PathVariable int id) {
+        log.info("Удаление фильма с id = {} ", id);
+        filmStorage.delete(id);
+    }
 }

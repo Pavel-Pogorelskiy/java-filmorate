@@ -90,50 +90,13 @@ public class FilmDbStorage implements FilmStorage {
     @SneakyThrows
     @Override
     public List<Film> getAll() {
-        Statement statement = jdbcTemplate.getDataSource().getConnection().createStatement();
-        List<Film> films = new ArrayList<>();
-        ResultSet rs = statement.executeQuery(
-                "select f.film_id, f.name, f.description, f.releaseDate, " +
-                        "f.duration, mp.mpa_id, mp.name as mpa_name, gl.genre_id, " +
-                        "g.name AS genre_name from films as f  " +
-                        "join mpa as mp on f.mpa = mp.mpa_id " +
-                        "left join genre_link gl ON gl.FILM_ID = f.FILM_ID " +
-                        "left join genre g on g.genre_id = gl.genre_id " +
-                        "order by f.film_id ASC");
-        rs.next();
-        if (rs.getRow() != 0) {
-            while (!rs.isAfterLast()) {
-                Film film = Film.builder()
-                        .id(rs.getInt("film_id"))
-                        .name(rs.getString("name"))
-                        .description(rs.getString("description"))
-                        .duration(rs.getInt("duration"))
-                        .releaseDate(rs.getDate("releaseDate").toLocalDate())
-                        .mpa(Mpa.builder()
-                                .id(rs.getInt("mpa_id"))
-                                .name(rs.getString("mpa_name"))
-                                .build())
-                        .build();
-                List<Genre> genres = new ArrayList<>();
-                if (rs.getInt("genre_id") > 0) {
-                    while (film.getId() == rs.getInt("film_id")) {
-                        Genre genre = new Genre();
-                        genre.setId(rs.getInt("genre_id"));
-                        genre.setName(rs.getString("genre_name"));
-                        genres.add(genre);
-                        rs.next();
-                        if (rs.isAfterLast()) {
-                            break;
-                        }
-                    }
-                } else {
-                    rs.next();
-                }
-                film.setGenres(genres);
-                films.add(film);
-            }
-        }
-        return films;
+        List<Film> films = jdbcTemplate.query(
+                "select f.film_id, f.name, " +
+                        "f.description, f.releaseDate, f.duration, " +
+                        "m.mpa_id, m.name as mpa_name from films as f " +
+                        "join mpa m on f.mpa = m.mpa_id",
+                FilmDbStorage::createFilm);
+        return FilmDbStorage.fillGenres(films, jdbcTemplate);
     }
 
     @Override
@@ -263,5 +226,61 @@ public class FilmDbStorage implements FilmStorage {
                     }
                 });
         return genres;
+    }
+
+    static Map<Integer, List<Genre>> createGenres(ResultSet rs, int RowNum) throws SQLException {
+        Map<Integer, List<Genre>> genreMap = new HashMap<>();
+        boolean done = false;
+        do {
+            int filmId = rs.getInt("film_id");
+            List<Genre> genreList = new ArrayList<>();
+            do {
+                int genreId = rs.getInt("genre_id");
+                if (genreId == 0) {
+                    done = !rs.next();
+                    break;
+                }
+                Genre genre = Genre.builder()
+                        .id(genreId)
+                        .name(rs.getString("name"))
+                        .build();
+                genreList.add(genre);
+                done = !rs.next();
+            } while (!done && (rs.getInt("film_id") == filmId));
+            genreMap.put(filmId, genreList);
+        } while (!done);
+        return genreMap;
+    }
+
+    static public List<Film> fillGenres(List<Film> films, JdbcTemplate jdbcTemplate) {
+        if (films.isEmpty()) {
+            return films;
+        }
+        StringBuilder filmIds = new StringBuilder();
+        for (Film film : films) {
+            filmIds.append(film.getId()).append(",");
+        }
+        filmIds.deleteCharAt(filmIds.length() - 1);
+        String sql =
+                "SELECT gl.film_id, g.genre_id, g.name " +
+                        "FROM genre_link gl " +
+                        "JOIN genre g ON g.genre_id = gl.genre_id " +
+                        "WHERE gl.film_id IN (" + filmIds.toString() + ");";
+        try {
+            Map<Integer, List<Genre>> genres = jdbcTemplate.queryForObject(
+                    sql, FilmDbStorage::createGenres);
+
+            for (int i = 0; i < films.size(); i++) {
+                Film film = films.get(i);
+                if (genres.get(film.getId()) == null) {
+                    film.setGenres(new ArrayList<Genre>());
+                } else {
+                    film.setGenres(genres.get(film.getId()));
+                }
+            }
+        } catch (EmptyResultDataAccessException e) {
+            return films;
+        }
+        return films;
     }
 }
