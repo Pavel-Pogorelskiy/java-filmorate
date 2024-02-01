@@ -108,7 +108,7 @@ public class FilmDbStorage implements FilmStorage {
                         "m.mpa_id, m.name as mpa_name from films as f " +
                         "join mpa m on f.mpa = m.mpa_id",
                 FilmDbStorage::createFilm);
-        for (Film film : films){
+        for (Film film : films) {
             film.setDirectors(getFilmDirectors(film.getId()));
         }
         return FilmDbStorage.fillGenres(films, jdbcTemplate);
