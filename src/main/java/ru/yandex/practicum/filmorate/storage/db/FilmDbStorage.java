@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.db;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -191,25 +192,75 @@ public class FilmDbStorage implements FilmStorage {
         return genres;
     }
 
+    static Map<Integer, List<Genre>> createGenres(ResultSet rs, int RowNum) throws SQLException {
+        Map<Integer, List<Genre>> genreMap = new HashMap<>();
+        boolean done = false;
+        do {
+            int filmId = rs.getInt("film_id");
+            List<Genre> genreList = new ArrayList<>();
+            do {
+                int genreId = rs.getInt("genre_id");
+                if (genreId == 0) {
+                    done = !rs.next();
+                    break;
+                }
+                Genre genre = Genre.builder()
+                        .id(genreId)
+                        .name(rs.getString("name"))
+                        .build();
+                genreList.add(genre);
+                done = !rs.next();
+            } while (!done && (rs.getInt("film_id") == filmId));
+            genreMap.put(filmId, genreList);
+        } while (!done);
+        return genreMap;
+    }
+
+    static List<Film> fillGenres(List<Film> films, JdbcTemplate jdbcTemplate) {
+        if (films.isEmpty()) {
+            return films;
+        }
+        StringBuilder filmIds = new StringBuilder();
+        for (Film film : films) {
+            filmIds.append(film.getId()).append(",");
+        }
+        filmIds.deleteCharAt(filmIds.length() - 1);
+        String sql =
+                "SELECT gl.film_id, g.genre_id, g.name " +
+                        "FROM genre_link gl " +
+                        "JOIN genre g ON g.genre_id = gl.genre_id " +
+                        "WHERE gl.film_id IN (" + filmIds.toString() + ");";
+        try {
+            Map<Integer, List<Genre>> genres = jdbcTemplate.queryForObject(
+                    sql, FilmDbStorage::createGenres);
+            return films.stream()
+                    .map(film -> {
+                        if (genres.get(film.getId()) == null) {
+                            film.setGenres(new ArrayList<Genre>());
+                        } else {
+                            film.setGenres(genres.get(film.getId()));
+                        }
+                        return film;
+                    })
+                    .collect(Collectors.toList());
+        } catch (EmptyResultDataAccessException e) {
+            return films;
+        }
+    }
+
     public List<Film> getCommonFilms(int userId, int friendId) {
-        String sql = "SELECT f.film_id, f.name, f.description, f.releaseDate, " +
-                "f.duration, mp.mpa_id, mp.name as mpa_name, gl.genre_id, " +
-                "g.name AS genre_name " +
-                "FROM films as f " +
-                "JOIN mpa as mp on f.mpa = mp.mpa_id " +
-                "LEFT JOIN genre_link gl ON gl.film_id = f.film_id " +
-                "LEFT JOIN genre g on g.genre_id = gl.genre_id " +
+        String sql = "SELECT f.film_id, f.name, f.description, f.releaseDate,  " +
+                "f.duration, mp.mpa_id, mp.name as mpa_name, COUNT(l.user_id) AS rating " +
+                "FROM films as f JOIN mpa as mp on f.mpa = mp.mpa_id " +
                 "LEFT JOIN likes as l on f.film_id = l.film_id " +
-                "WHERE f.film_id IN ( " +
-                "SELECT l.film_id " +
-                "FROM likes as l " +
-                "WHERE user_id = ? ) " +
+                "WHERE l.user_id  = ? " +
                 "AND f.film_id IN ( " +
                 "SELECT l.film_id " +
                 "FROM likes as l " +
                 "WHERE user_id = ? ) " +
-                "group by f.film_id " +
-                "order by count(l.user_id) desc";
-        return jdbcTemplate.query(sql, FilmDbStorage::createFilm, userId, friendId);
+                "GROUP BY f.film_id " +
+                "ORDER BY rating desc";
+        List <Film> films = jdbcTemplate.query(sql, FilmDbStorage::createFilm, userId, friendId);
+        return FilmDbStorage.fillGenres(films, jdbcTemplate);
     }
 }
