@@ -59,6 +59,7 @@ public class FilmService {
             return likesStorage.getFilmsFilteredByGenreAndYear(count, genreId, year);
         }
     }
+
     public Collection<Film> getFilmsByDirector(int directorId, String sortBy) {
         if (directorStorage.isRegistered(directorId)) {
             List<Film> films = filmStorage.getFilmsByDirector(directorId);
