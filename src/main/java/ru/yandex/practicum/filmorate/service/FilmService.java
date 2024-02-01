@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.storage.db.UserDbStorage;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class FilmService {
@@ -52,7 +53,6 @@ public class FilmService {
         }
     }
 
-
     private void sortFilms(List<Film> films, String sortBy) {
         switch (sortBy) {
             case "year":
@@ -64,5 +64,9 @@ public class FilmService {
             default:
                 throw new IllegalArgumentException("Invalid sort parameter: " + sortBy);
         }
+    }
+
+    public Set<Film> getCommonFilms(int userId, int friendId) {
+        return Set.copyOf(filmStorage.getCommonFilms(userId, friendId));
     }
 }
