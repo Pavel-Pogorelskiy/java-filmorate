@@ -1,15 +1,15 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.yandex.practicum.filmorate.exception.NotFoundDataException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 
@@ -17,7 +17,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class FilmDbStorageTest {
+public class ReviewDbStorageTest {
     private final JdbcTemplate jdbcTemplate;
 
     @BeforeEach
@@ -90,92 +90,52 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void uptade() {
-        Film newFilm = Film.builder()
+    public void testCreateAndFindReviewById() {
+        Mpa mpa = Mpa.builder()
                 .id(1)
-                .name("Слово чушпана")
-                .description("Туда сюда")
-                .releaseDate(LocalDate.of(1990, 1, 1))
-                .duration(120)
-                .mpa(Mpa.builder()
-                        .id(2)
-                        .build())
+                .name("G")
                 .build();
-        Film uptadeFilm = Film.builder()
-                .id(1)
-                .name("Барби")
-                .description("Все розовое")
-                .releaseDate(LocalDate.of(2023, 1, 1))
-                .duration(200)
-                .mpa(Mpa.builder()
-                        .id(4)
-                        .build())
-                .build();
-        FilmDbStorage filmDbStorage = new FilmDbStorage(jdbcTemplate);
-        filmDbStorage.create(newFilm);
-        filmDbStorage.uptade(uptadeFilm);
-        Film savedFilm = filmDbStorage.get(1);
-        uptadeFilm.setMpa(Mpa.builder()
-                .id(4)
-                .name("R")
-                .build());
-        assertThat(savedFilm)
-                .isNotNull()
-                .usingRecursiveComparison()
-                .isEqualTo(uptadeFilm);
-    }
 
-    @Test
-    void get() {
         Film newFilm = Film.builder()
                 .id(1)
-                .name("Слово чушпана")
-                .description("Туда сюда")
+                .name("New Film")
+                .description("Description")
                 .releaseDate(LocalDate.of(1990, 1, 1))
-                .duration(120)
-                .mpa(Mpa.builder()
-                        .id(2)
-                        .build())
+                .duration(10)
+                .mpa(mpa)
                 .build();
-        FilmDbStorage filmDbStorage = new FilmDbStorage(jdbcTemplate);
-        filmDbStorage.create(newFilm);
-        Film savedFilm = filmDbStorage.get(1);
-        newFilm.setMpa(Mpa.builder()
-                .id(2)
-                .name("PG")
-                .build());
-        assertThat(savedFilm)
-                .isNotNull()
-                .usingRecursiveComparison()
-                .isEqualTo(newFilm);
-    }
 
-    @Test
-    void delete() {
-        Film newFilm = Film.builder()
+        User newUser = User.builder()
                 .id(1)
-                .name("Слово чушпана")
-                .description("Туда сюда")
-                .releaseDate(LocalDate.of(1990, 1, 1))
-                .duration(120)
-                .mpa(Mpa.builder()
-                        .id(2)
-                        .build())
+                .email("user@email.ru")
+                .login("vanya123")
+                .name("Ivan Petrov")
+                .birthday(LocalDate.of(1990, 1, 1))
                 .build();
+
+        Review newReview = Review.builder()
+                .id(1)
+                .content("Content")
+                .isPositive(true)
+                .filmId(1)
+                .userId(1)
+                .useful(0)
+                .build();
+
         FilmDbStorage filmDbStorage = new FilmDbStorage(jdbcTemplate);
         filmDbStorage.create(newFilm);
-        Film savedFilm = filmDbStorage.get(1);
-        newFilm.setMpa(Mpa.builder()
-                .id(2)
-                .name("PG")
-                .build());
-        assertThat(savedFilm)
+
+        UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
+        userStorage.create(newUser);
+
+        ReviewDbStorage reviewDbStorage = new ReviewDbStorage(jdbcTemplate);
+        reviewDbStorage.create(newReview);
+
+        Review savedReview = reviewDbStorage.get(1);
+
+        assertThat(savedReview)
                 .isNotNull()
                 .usingRecursiveComparison()
-                .isEqualTo(newFilm);
-        filmDbStorage.delete(1);
-        Assertions.assertThrows(
-                NotFoundDataException.class,
-                () -> filmDbStorage.get(1), "Фильма с id = 1 не существует");
+                .isEqualTo(newReview);
     }
 }
