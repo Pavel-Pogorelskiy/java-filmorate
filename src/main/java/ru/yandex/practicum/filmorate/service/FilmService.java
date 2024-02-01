@@ -69,8 +69,4 @@ public class FilmService {
                 throw new IllegalArgumentException("Invalid sort parameter: " + sortBy);
         }
     }
-
-    public Set<Film> getCommonFilms(int userId, int friendId) {
-        return Set.copyOf(filmStorage.getCommonFilms(userId, friendId));
-    }
 }
