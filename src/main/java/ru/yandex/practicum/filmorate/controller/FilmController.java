@@ -9,7 +9,9 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.db.FilmDbStorage;
 
 import javax.validation.Valid;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -24,7 +26,7 @@ public class FilmController {
     private static final LocalDate DATE_FIRST_RELEASE = LocalDate.of(1895, 12, 28);
 
     @GetMapping
-    public List<Film> getAll() {
+    public List<Film> getAll() throws SQLException {
         log.info("Получение списка всех фильмов  {}", filmStorage.getAll());
         return filmStorage.getAll();
     }
@@ -67,5 +69,11 @@ public class FilmController {
         if (data.getReleaseDate().isBefore(DATE_FIRST_RELEASE)) {
             throw new ValidateDateException("Неверно указана дата релиза фильма. Минимальное значение 28.12.1895");
         }
+    }
+
+    @GetMapping("/director/{directorId}")
+    public Collection<Film> getFilmsByDirector(@PathVariable(value = "directorId") int directorId,
+                                               @RequestParam(value = "sortBy", required = false) String sortBy) {
+        return filmService.getFilmsByDirector(directorId, sortBy);
     }
 }
