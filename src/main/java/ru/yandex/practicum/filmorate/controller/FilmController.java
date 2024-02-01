@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.storage.db.FilmDbStorage;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -70,7 +69,7 @@ public class FilmController {
 
     @GetMapping("/common")
     public Set<Film> getCommonFilms(@Validated @RequestParam @Min(1) Integer userId,
-                                    @Validated @RequestParam @Min(1) Integer friendId) throws SQLException {
+                                    @Validated @RequestParam @Min(1) Integer friendId) {
         return filmService.getCommonFilms(userId, friendId);
     }
 

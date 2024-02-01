@@ -57,7 +57,6 @@ public class FilmService {
         }
     }
 
-
     private void sortFilms(List<Film> films, String sortBy) {
         switch (sortBy) {
             case "year":
