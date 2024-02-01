@@ -16,6 +16,7 @@ import java.util.Map;
 @Primary
 public class LikesDbStorage implements LikesStorage {
     private final JdbcTemplate jdbcTemplate;
+    private final FilmDbStorage filmDbStorage;
 
     @Override
     public void addLikeFilm(int filmId, int userId) {
@@ -61,8 +62,12 @@ public class LikesDbStorage implements LikesStorage {
                 "LIMIT ?;";
 
         List<Film> films = jdbcTemplate.query(sql, FilmDbStorage::createFilm, year, limit);
+        films = FilmDbStorage.fillGenres(films, jdbcTemplate);
+        for (Film film : films) {
+            film.setDirectors(filmDbStorage.getFilmDirectors(film.getId()));
+        }
 
-        return FilmDbStorage.fillGenres(films, jdbcTemplate);
+        return films;
     }
 
     public List<Film> getFilmsFilteredByGenre(int limit, int genreId) {
@@ -86,8 +91,12 @@ public class LikesDbStorage implements LikesStorage {
                 "LIMIT ?;";
 
         List<Film> films = jdbcTemplate.query(sql, FilmDbStorage::createFilm, genreId, limit);
+        films = FilmDbStorage.fillGenres(films, jdbcTemplate);
+        for (Film film : films) {
+            film.setDirectors(filmDbStorage.getFilmDirectors(film.getId()));
+        }
 
-        return FilmDbStorage.fillGenres(films, jdbcTemplate);
+        return films;
     }
 
     public List<Film> getFilmsFilteredByGenreAndYear(int limit, int genreId, int year) {
@@ -112,9 +121,11 @@ public class LikesDbStorage implements LikesStorage {
                 "LIMIT ?;";
 
         List<Film> films = jdbcTemplate.query(sql, FilmDbStorage::createFilm, year, genreId, limit);
+        films = FilmDbStorage.fillGenres(films, jdbcTemplate);
+        for (Film film : films) {
+            film.setDirectors(filmDbStorage.getFilmDirectors(film.getId()));
+        }
 
-        return FilmDbStorage.fillGenres(films, jdbcTemplate);
+        return films;
     }
-
-
 }

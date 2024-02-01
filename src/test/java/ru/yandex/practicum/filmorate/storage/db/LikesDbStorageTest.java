@@ -112,7 +112,7 @@ class LikesDbStorageTest {
         firstFilm = filmDbStorage.create(firstFilm);
         secondFilm = filmDbStorage.create(secondFilm);
 
-        LikesDbStorage likesDbStorage = new LikesDbStorage(jdbcTemplate);
+        LikesDbStorage likesDbStorage = new LikesDbStorage(jdbcTemplate, filmDbStorage);
 
         List<Film> savedFilms = likesDbStorage.getFilmsFilteredByGenre(2, 2);
 
@@ -172,7 +172,7 @@ class LikesDbStorageTest {
         firstFilm = filmDbStorage.create(firstFilm);
         secondFilm = filmDbStorage.create(secondFilm);
 
-        LikesDbStorage likesDbStorage = new LikesDbStorage(jdbcTemplate);
+        LikesDbStorage likesDbStorage = new LikesDbStorage(jdbcTemplate, filmDbStorage);
 
         List<Film> savedFilms = likesDbStorage.getFilmsFilteredByYear(2, 2024);
 
@@ -247,7 +247,7 @@ class LikesDbStorageTest {
         secondFilm = filmDbStorage.create(secondFilm);
         thirdFilm = filmDbStorage.create(thirdFilm);
 
-        LikesDbStorage likesDbStorage = new LikesDbStorage(jdbcTemplate);
+        LikesDbStorage likesDbStorage = new LikesDbStorage(jdbcTemplate, filmDbStorage);
 
         List<Film> savedFilms = likesDbStorage.getFilmsFilteredByGenreAndYear(2, 2, 2000);
 
