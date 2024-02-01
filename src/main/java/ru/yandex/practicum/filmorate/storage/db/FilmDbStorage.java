@@ -197,7 +197,8 @@ public class FilmDbStorage implements FilmStorage {
             Map<Integer, List<Genre>> genres = jdbcTemplate.queryForObject(
                     sql, FilmDbStorage::createGenres);
             return films.stream()
-                    .map(film -> { if (genres.get(film.getId()) == null) {
+                    .map(film -> {
+                        if (genres.get(film.getId()) == null) {
                         film.setGenres(new ArrayList<Genre>());
                     } else {
                         film.setGenres(genres.get(film.getId()));
