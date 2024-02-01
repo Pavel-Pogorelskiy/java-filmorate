@@ -41,7 +41,7 @@ public class FilmDbStorage implements FilmStorage {
         if (data.getGenres().size() > 0) {
             data.setGenres(addGenreDb(data.getGenres(), data.getId()));
         }
-        if (data.getDirectors().size() > 0){
+        if (data.getDirectors().size() > 0) {
             addFilmDirector(data);
         }
         return data;
