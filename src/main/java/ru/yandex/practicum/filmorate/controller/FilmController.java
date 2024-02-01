@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -77,6 +78,12 @@ public class FilmController {
         if (data.getReleaseDate().isBefore(DATE_FIRST_RELEASE)) {
             throw new ValidateDateException("Неверно указана дата релиза фильма. Минимальное значение 28.12.1895");
         }
+    }
+
+    @GetMapping("/director/{directorId}")
+    public Collection<Film> getFilmsByDirector(@PathVariable(value = "directorId") int directorId,
+                                               @RequestParam(value = "sortBy", required = false) String sortBy) {
+        return filmService.getFilmsByDirector(directorId, sortBy);
     }
 
     @DeleteMapping(value = "/{id}")
