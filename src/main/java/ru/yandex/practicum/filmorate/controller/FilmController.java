@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidateDateException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -9,9 +10,11 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.db.FilmDbStorage;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -80,5 +83,11 @@ public class FilmController {
     public void removeFilm(@PathVariable int id) {
         log.info("Удаление фильма с id = {} ", id);
         filmStorage.delete(id);
+    }
+
+    @GetMapping("/common")
+    public Set<Film> getCommonFilms(@Validated @RequestParam @Min(1) Integer userId,
+                                    @Validated @RequestParam @Min(1) Integer friendId) {
+        return filmService.getCommonFilms(userId, friendId);
     }
 }
