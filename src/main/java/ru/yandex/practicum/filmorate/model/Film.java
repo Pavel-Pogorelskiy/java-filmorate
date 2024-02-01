@@ -33,5 +33,7 @@ public class Film extends BaseUnit {
     @NotNull
     @Builder.Default
     private List<Genre> genres = new ArrayList<>();
+    @NotNull
+    @Builder.Default
     private Set<Director> directors = new HashSet<>();
 }
