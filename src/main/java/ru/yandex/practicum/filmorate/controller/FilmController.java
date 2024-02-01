@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.db.FilmDbStorage;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -75,6 +76,12 @@ public class FilmController {
         if (data.getReleaseDate().isBefore(DATE_FIRST_RELEASE)) {
             throw new ValidateDateException("Неверно указана дата релиза фильма. Минимальное значение 28.12.1895");
         }
+    }
+
+    @GetMapping("/director/{directorId}")
+    public Collection<Film> getFilmsByDirector(@PathVariable(value = "directorId") int directorId,
+                                               @RequestParam(value = "sortBy", required = false) String sortBy) {
+        return filmService.getFilmsByDirector(directorId, sortBy);
     }
 
     @DeleteMapping(value = "/{id}")
