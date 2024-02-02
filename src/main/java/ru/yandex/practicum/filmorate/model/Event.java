@@ -1,16 +1,12 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.*;
-import java.time.LocalDateTime;
-
 
 @Data
 @EqualsAndHashCode(callSuper = true)
