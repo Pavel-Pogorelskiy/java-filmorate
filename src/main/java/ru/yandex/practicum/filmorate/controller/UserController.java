@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.db.EventsDbStorage;
 import ru.yandex.practicum.filmorate.storage.db.UserDbStorage;
 
 import javax.validation.Valid;
