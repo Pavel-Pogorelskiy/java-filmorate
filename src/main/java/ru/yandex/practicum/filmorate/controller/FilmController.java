@@ -66,16 +66,23 @@ public class FilmController {
 
     @GetMapping(value = "/popular")
     public List<Film> getPopularFilms(@RequestParam(value = "count", required = false, defaultValue = "10") Integer count,
-                                      @RequestParam(value = "genreId", required = false, defaultValue = "0") Integer genreId,
-                                      @RequestParam(value = "year", required = false, defaultValue = "0") Integer year) {
+                                      @RequestParam(value = "genreId", required = false) Integer genreId,
+                                      @RequestParam(value = "year", required = false) Integer year) {
 
-        if (genreId <= 0 && year <= 0) {
+        if (genreId == null && year == null) {
             return filmService.getFilms(count);
         } else {
-            if (year > 0 && year < DATE_FIRST_RELEASE.getYear()) {
+
+            if (genreId != null && (genreId < 1 || genreId > 6)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Неверно указан год релиза фильма. Минимальное значение 1895");
+                        "Неверно указан жанр фильма. Значение должно быть в диапазоне от 1 до 6 включительно");
             }
+
+            if (year != null && (year < DATE_FIRST_RELEASE.getYear() || year > LocalDate.now().getYear())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Неверно указан год релиза фильма. Значение должно быть в диапазоне от 1895 до сего года включительно");
+            }
+
             return filmService.getFilteredFilms(count, genreId, year);
         }
     }
