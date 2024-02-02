@@ -2,8 +2,10 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.exception.ValidateDateException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -70,9 +72,12 @@ public class FilmController {
         if (genreId <= 0 && year <= 0) {
             return filmService.getFilms(count);
         } else {
+            if (year > 0 && year < DATE_FIRST_RELEASE.getYear()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Неверно указан год релиза фильма. Минимальное значение 1895");
+            }
             return filmService.getFilteredFilms(count, genreId, year);
         }
-
     }
 
     public void validate(Film data) {
