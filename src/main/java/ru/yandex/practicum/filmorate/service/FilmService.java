@@ -41,6 +41,17 @@ public class FilmService {
         return likesStorage.getFilms(count);
     }
 
+    public List<Film> getFilteredFilms(Integer count, Integer genreId, Integer year) {
+
+        if (genreId != null && year == null) {
+            return likesStorage.getFilmsFilteredByGenre(count, genreId);
+        } else if (genreId == null && year != null) {
+            return likesStorage.getFilmsFilteredByYear(count, year);
+        } else {
+            return likesStorage.getFilmsFilteredByGenreAndYear(count, genreId, year);
+        }
+    }
+
     public Collection<Film> getFilmsByDirector(int directorId, String sortBy) {
         if (directorStorage.isRegistered(directorId)) {
             List<Film> films = filmStorage.getFilmsByDirector(directorId);

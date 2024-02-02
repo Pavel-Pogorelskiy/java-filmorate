@@ -2,8 +2,10 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.exception.ValidateDateException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -63,8 +65,26 @@ public class FilmController {
     }
 
     @GetMapping(value = "/popular")
-    public List<Film> getPopularFilms(@RequestParam(value = "count",required = false,defaultValue = "10") Integer count) {
-        return filmService.getFilms(count);
+    public List<Film> getPopularFilms(@RequestParam(value = "count", required = false, defaultValue = "10") Integer count,
+                                      @RequestParam(value = "genreId", required = false) Integer genreId,
+                                      @RequestParam(value = "year", required = false) Integer year) {
+
+        if (genreId == null && year == null) {
+            return filmService.getFilms(count);
+        } else {
+
+            if (genreId != null && (genreId < 1 || genreId > 6)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Неверно указан жанр фильма. Значение должно быть в диапазоне от 1 до 6 включительно");
+            }
+
+            if (year != null && (year < DATE_FIRST_RELEASE.getYear() || year > LocalDate.now().getYear())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Неверно указан год релиза фильма. Значение должно быть в диапазоне от 1895 до сего года включительно");
+            }
+
+            return filmService.getFilteredFilms(count, genreId, year);
+        }
     }
 
     public void validate(Film data) {
