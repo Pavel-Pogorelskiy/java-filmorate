@@ -1,15 +1,14 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.exception.NotFoundDataException;
 import ru.yandex.practicum.filmorate.model.Event;
-import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.storage.EventsStorage;
 import ru.yandex.practicum.filmorate.storage.db.*;
 
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.List;
 
 @Service
@@ -24,18 +23,19 @@ public class EventService {
     public Event addLikeEvent(int userId, int filmId, Event.EventOperation operation) {
 
         return eventsStorage.addEvent(Event.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(Instant.now().toEpochMilli())
                 .userId(userId)
                 .eventType(Event.EventType.LIKE)
                 .operation(operation)
                 .entityId(filmId)
                 .build());
+
     }
 
     public Event addReviewEvent(int userId, int reviewId, Event.EventOperation operation) {
 
         return eventsStorage.addEvent(Event.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(Instant.now().toEpochMilli())
                 .userId(userId)
                 .eventType(Event.EventType.REVIEW)
                 .operation(operation)
@@ -46,7 +46,7 @@ public class EventService {
     public Event addFriendEvent(int userId, int friendId, Event.EventOperation operation) {
 
         return eventsStorage.addEvent(Event.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(Instant.now().toEpochMilli())
                 .userId(userId)
                 .eventType(Event.EventType.FRIEND)
                 .operation(operation)
@@ -56,13 +56,7 @@ public class EventService {
 
     public List<Event> getEventsUserFriends(int userId) {
 
-        try {
-            userStorage.validateId(userId);
-        } catch (NotFoundDataException e) {
-            new ResponseStatusException()
-        }
-
-
+        userStorage.validateId(userId);
         return eventsStorage.getEventsUserFriends(userId);
     }
 }

@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.db.*;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -32,7 +31,7 @@ public class FilmService {
         filmStorage.validateId(filmId);
         likesStorage.addLikeFilm(filmId, userId);
 
-        //eventService.addLikeEvent(userId, filmId, Event.EventOperation.ADD);
+        eventService.addLikeEvent(userId, filmId, Event.EventOperation.ADD);
     }
 
     public void deleteLike(int filmId, int userId) {
@@ -40,7 +39,7 @@ public class FilmService {
         filmStorage.validateId(filmId);
         likesStorage.removeLikeFilm(filmId, userId);
 
-        //eventService.addLikeEvent(userId, filmId, Event.EventOperation.REMOVE);
+        eventService.addLikeEvent(userId, filmId, Event.EventOperation.REMOVE);
     }
 
     public List<Film> getFilms(int count) {

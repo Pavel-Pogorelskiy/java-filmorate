@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class Event extends BaseUnit {
 
     @NotNull
-    private LocalDateTime timestamp;
+    private Long timestamp;
 
     @Min(1)
     private int userId;

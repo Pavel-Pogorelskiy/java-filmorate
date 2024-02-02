@@ -24,7 +24,7 @@ public class UserService {
         userStorage.validateId(friendId);
         friendStorage.addFriend(userId, friendId);
 
-        //eventService.addFriendEvent(userId, friendId, Event.EventOperation.ADD);
+        eventService.addFriendEvent(userId, friendId, Event.EventOperation.ADD);
     }
 
     public List<User> getFriend(int userId) {
@@ -37,7 +37,7 @@ public class UserService {
         userStorage.validateId(friendId);
         friendStorage.deleteFriend(userId, friendId);
 
-        //eventService.addFriendEvent(userId, friendId, Event.EventOperation.REMOVE);
+        eventService.addFriendEvent(userId, friendId, Event.EventOperation.REMOVE);
     }
 
     public List<User> commonFriends(int userId, int friendId) {

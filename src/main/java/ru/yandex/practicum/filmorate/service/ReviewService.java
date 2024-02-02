@@ -37,7 +37,7 @@ public class ReviewService {
         userStorage.validateId(data.getUserId());
 
         data = reviewStorage.create(data);
-        //eventService.addReviewEvent(data.getUserId(), data.getId(), Event.EventOperation.ADD);
+        eventService.addReviewEvent(data.getUserId(), data.getId(), Event.EventOperation.ADD);
 
         return data;
     }
@@ -48,13 +48,18 @@ public class ReviewService {
         userStorage.validateId(data.getUserId());
 
         data = reviewStorage.uptade(data);
-        //eventService.addReviewEvent(data.getUserId(), data.getId(), Event.EventOperation.UPDATE);
+        eventService.addReviewEvent(data.getUserId(), data.getId(), Event.EventOperation.UPDATE);
 
         return data;
     }
 
     public void deleteReview(int reviewId) {
+
+        Review review = getReview(reviewId);
+
         reviewStorage.delete(reviewId);
+
+        eventService.addReviewEvent(review.getUserId(), reviewId, Event.EventOperation.REMOVE);
     }
 
     public Review getReview(int reviewId) {

@@ -6,13 +6,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Event;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.EventsStorage;
-import ru.yandex.practicum.filmorate.storage.LikesStorage;
+
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -25,16 +23,16 @@ public class EventsDbStorage implements EventsStorage {
     @Override
     public Event addEvent(Event event) {
 
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("events")
                 .usingGeneratedKeyColumns("id");
 
         Map<String, Object> params = Map.of(
-                "timestamp", event.getTimestamp(),
-                "userId", event.getUserId(),
-                "eventType", event.getEventType().name(),
+                "time_stamp", event.getTimestamp(),
+                "user_id", event.getUserId(),
+                "event_type", event.getEventType().name(),
                 "operation", event.getOperation().name(),
-                "entityId", event.getEntityId());
+                "entity_id", event.getEntityId());
 
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
         event.setId(id.intValue());
@@ -47,10 +45,7 @@ public class EventsDbStorage implements EventsStorage {
 
         return jdbcTemplate.query(
                 "SELECT * FROM events " +
-                    "WHERE user_id IN " +
-                        "(SELECT user_id FROM friends " +
-                        "WHERE friends_id = ?) " +
-                    "ORDER BY time_stamp DESC;",
+                    "WHERE user_id = ?;",
                 EventsDbStorage::getEvent, userId);
     }
 
@@ -58,10 +53,11 @@ public class EventsDbStorage implements EventsStorage {
 
         return Event.builder()
                 .id(rs.getInt("id"))
-                .timestamp(LocalDateTime.parse(rs.getTimestamp("time_stamp").toString()))
+                .timestamp(rs.getLong("time_stamp"))
+                .userId(rs.getInt("user_id"))
                 .eventType(Event.EventType.valueOf(rs.getString("event_type")))
                 .operation(Event.EventOperation.valueOf(rs.getString("operation")))
-                .entityId(rs.getInt("entityId"))
+                .entityId(rs.getInt("entity_id"))
                 .build();
     }
 }
