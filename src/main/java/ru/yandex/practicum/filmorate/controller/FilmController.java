@@ -110,4 +110,11 @@ public class FilmController {
                                     @Validated @RequestParam @Min(1) Integer friendId) {
         return filmService.getCommonFilms(userId, friendId);
     }
+
+    @GetMapping("/search")
+    public List<Film> searchFilms(@RequestParam String query,
+                                 @RequestParam List<String> by) {
+        log.info("Получен запрос на поиск фильма. Поисковой запрос {}, искать по {}.", query, by);
+        return filmService.searchFilms(query, by);
+    }
 }

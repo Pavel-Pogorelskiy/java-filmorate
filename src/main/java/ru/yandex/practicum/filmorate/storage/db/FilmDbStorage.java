@@ -370,4 +370,38 @@ public class FilmDbStorage implements FilmStorage {
         List<Film> films = jdbcTemplate.query(sql, FilmDbStorage::createFilm, userId, friendId);
         return FilmDbStorage.fillGenres(films, jdbcTemplate);
     }
+
+    public List<Film> searchFilm(String query, boolean searchByTitle, boolean searchByDirector) {
+        String sqlStart = "SELECT f.film_id, f.name, f.description, f.releaseDate, " +
+                "f.duration, mp.mpa_id, mp.name as mpa_name, COUNT(l.user_id) AS rating, " +
+                "d.director_id, d.name " +
+                "FROM films as f " +
+                "JOIN mpa as mp on f.mpa = mp.mpa_id " +
+                "LEFT JOIN likes as l on f.film_id = l.film_id " +
+                "LEFT JOIN films_directors as fd on f.film_id = fd.film_id " +
+                "LEFT JOIN directors as d on fd.director_id = d.director_id " +
+                "WHERE ";
+
+        String searchQuery;
+        String searchByTitleQuery = "LOWER(f.name) LIKE '%" + query.toLowerCase() + "%'";
+        String searchByDirectorQuery = "LOWER(d.name) LIKE '%" + query.toLowerCase() + "%'";
+
+        if (searchByTitle && searchByDirector) {
+            searchQuery = searchByTitleQuery + " OR " + searchByDirectorQuery;
+        } else if (searchByTitle) {
+            searchQuery = searchByTitleQuery;
+        } else {
+            searchQuery = searchByDirectorQuery;
+        }
+
+        String sqlFinish = "GROUP BY f.film_id " +
+                "ORDER BY rating desc";
+
+        List<Film> films = jdbcTemplate.query(sqlStart + searchQuery + sqlFinish, FilmDbStorage::createFilm);
+        films = FilmDbStorage.fillGenres(films, jdbcTemplate);
+        for (Film film : films) {
+            film.setDirectors(getFilmDirectors(film.getId()));
+        }
+        return films;
+    }
 }
