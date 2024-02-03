@@ -23,7 +23,7 @@ class LikesDbStorageTest {
 
     @BeforeEach
     public void newDateBase() {
-        jdbcTemplate.update("drop table if exists mpa, films, likes,users,friends,genre,genre_link, DIRECTORS, FILMS_DIRECTORS, reviews,like_review;\n" +
+        jdbcTemplate.update("drop table if exists mpa, films, likes,users,friends,genre,genre_link, DIRECTORS, FILMS_DIRECTORS, reviews,like_review, events;\n" +
                 "\n" +
                 "CREATE TABLE IF NOT EXISTS mpa (\n" +
                 "  mpa_id integer PRIMARY KEY,\n" +
