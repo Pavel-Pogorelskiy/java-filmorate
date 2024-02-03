@@ -91,7 +91,7 @@ public class FilmService {
         } else if (by.contains("title")) {
             return filmStorage.searchFilm(query, true, false);
         } else {
-            throw new RuntimeException ("Условие поиска задано неверно.");
+            throw new RuntimeException("Условие поиска задано неверно.");
         }
     }
 }
