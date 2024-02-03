@@ -6,15 +6,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.*;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class MpaDbStorageTest {
+public class EventsDbStorageTest {
     private final JdbcTemplate jdbcTemplate;
 
     @BeforeEach
@@ -108,46 +111,47 @@ class MpaDbStorageTest {
     }
 
     @Test
-    void get() {
-        Mpa mpaTest = Mpa.builder()
-                .id(1)
-                .name("G")
-                .build();
-        MpaDbStorage mpaStorage = new MpaDbStorage(jdbcTemplate);
-        Mpa mpa = mpaStorage.get(1);
-        assertThat(mpa)
-                .isNotNull()
-                .usingRecursiveComparison()
-                .isEqualTo(mpaTest);
-    }
+    public void test() {
 
-    @Test
-    void getAll() {
-        Mpa mpaTest1 = Mpa.builder()
-                .id(1)
-                .name("G")
+        User user = User.builder()
+                .email("user@email.ru")
+                .login("vanya123")
+                .name("Ivan Petrov")
+                .birthday(LocalDate.of(1990, 1, 1))
                 .build();
-        Mpa mpaTest2 = Mpa.builder()
-                .id(2)
-                .name("PG")
-                .build();
-        Mpa mpaTest3 = Mpa.builder()
-                .id(3)
-                .name("PG-13")
-                .build();
-        Mpa mpaTest4 = Mpa.builder()
-                .id(4)
-                .name("R")
-                .build();
-        Mpa mpaTest5 = Mpa.builder()
-                .id(5)
-                .name("NC-17")
-                .build();
-        MpaDbStorage mpaStorage = new MpaDbStorage(jdbcTemplate);
-        List<Mpa> mpa = mpaStorage.getAll();
-        assertThat(mpa)
+
+        UserDbStorage userStorage = new UserDbStorage(jdbcTemplate);
+        user = userStorage.create(user);
+
+        EventsDbStorage eventsDbStorage = new EventsDbStorage(jdbcTemplate);
+        Event firstEvent = eventsDbStorage.addEvent(Event.builder()
+                .timestamp(Instant.now().toEpochMilli())
+                .userId(user.getId())
+                .eventType(Event.EventType.LIKE)
+                .operation(Event.EventOperation.ADD)
+                .entityId(2)
+                .build());
+
+        Event secondEvent = eventsDbStorage.addEvent(Event.builder()
+                .timestamp(Instant.now().toEpochMilli())
+                .userId(user.getId())
+                .eventType(Event.EventType.FRIEND)
+                .operation(Event.EventOperation.REMOVE)
+                .entityId(6)
+                .build());
+
+        List<Event> events = eventsDbStorage.getEventsUserFriends(user.getId());
+
+        assertEquals(2, events.size(), "Wrong count of event");
+
+        assertThat(events.get(0))
                 .isNotNull()
                 .usingRecursiveComparison()
-                .isEqualTo(List.of(mpaTest1, mpaTest2, mpaTest3, mpaTest4, mpaTest5));
+                .isEqualTo(firstEvent);
+
+        assertThat(events.get(1))
+                .isNotNull()
+                .usingRecursiveComparison()
+                .isEqualTo(secondEvent);
     }
 }
