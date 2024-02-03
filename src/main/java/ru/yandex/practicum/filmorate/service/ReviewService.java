@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.db.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.db.LikeReviewDbStorage;
@@ -16,6 +18,9 @@ public class ReviewService {
     UserDbStorage userStorage;
     LikeReviewDbStorage likeReviewDbStorage;
 
+    @Autowired
+    private EventService eventService;
+
     public ReviewService(ReviewDbStorage reviewStorage,
                          UserDbStorage userStorage,
                          FilmDbStorage filmStorage,
@@ -30,18 +35,31 @@ public class ReviewService {
     public Review createReview(Review data) {
         filmStorage.validateId(data.getFilmId());
         userStorage.validateId(data.getUserId());
-        return reviewStorage.create(data);
+
+        data = reviewStorage.create(data);
+        eventService.addReviewEvent(data.getUserId(), data.getId(), Event.EventOperation.ADD);
+
+        return data;
     }
 
     public Review updateReview(Review data) {
         reviewStorage.validateId(data.getId());
         filmStorage.validateId(data.getFilmId());
         userStorage.validateId(data.getUserId());
-        return reviewStorage.uptade(data);
+
+        data = reviewStorage.uptade(data);
+        eventService.addReviewEvent(data.getUserId(), data.getId(), Event.EventOperation.UPDATE);
+
+        return data;
     }
 
     public void deleteReview(int reviewId) {
+
+        Review review = getReview(reviewId);
+
         reviewStorage.delete(reviewId);
+
+        eventService.addReviewEvent(review.getUserId(), reviewId, Event.EventOperation.REMOVE);
     }
 
     public Review getReview(int reviewId) {

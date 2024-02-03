@@ -3,7 +3,9 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.db.UserDbStorage;
 
@@ -18,6 +20,9 @@ public class UserController {
     private UserService userService;
     @Autowired
     private UserDbStorage userStorage;
+
+    @Autowired
+    private EventService eventService;
 
     @GetMapping
     public List<User> getAll() {
@@ -72,5 +77,12 @@ public class UserController {
     public void removeUser(@PathVariable int id) {
         log.info("Удаление пользователя с id = {} ", id);
         userStorage.delete(id);
+    }
+
+    @GetMapping(value = "/{id}/feed")
+    public List<Event> getEvents(@PathVariable int id) {
+
+        log.info("Get list event fo user id = {}", id);
+        return eventService.getEventsUserFriends(id);
     }
 }
