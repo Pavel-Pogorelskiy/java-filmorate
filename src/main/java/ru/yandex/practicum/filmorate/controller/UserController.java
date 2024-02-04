@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.db.UserDbStorage;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Slf4j
@@ -88,7 +89,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}/recommendations")
-    public List<Film> recommendationsFilms(@PathVariable int id) {
+    public List<Film> recommendationsFilms(@PathVariable @Min(1) int id) {
         log.info("Рекомендации для пользователя с id = {} ", id);
         return userService.recommendationsFilms(id);
     }
