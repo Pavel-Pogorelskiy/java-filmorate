@@ -68,7 +68,7 @@ public class FilmDbStorage implements FilmStorage {
 
         deleteFilmDirectors(data.getId());
         if (isDirectorsRegistered(data)) {
-            fillFilmDirectors(data);
+            addFilmDirector(data);
         }
         data.setDirectors(getFilmDirectors(data.getId()));
         return data;
@@ -145,6 +145,7 @@ public class FilmDbStorage implements FilmStorage {
                         .name(rs.getString("mpa_name"))
                         .build())
                 .build();
+
     }
 
     static Genre createGenre(ResultSet rs, int RowNum) throws SQLException {
@@ -207,23 +208,6 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery = "SELECT * FROM directors WHERE director_id = ?";
         SqlRowSet genreRow = jdbcTemplate.queryForRowSet(sqlQuery, directorId);
         return genreRow.next();
-    }
-
-    public void fillFilmDirectors(Film film) {
-        List<Director> directors = List.copyOf(film.getDirectors());
-        String sqlQuery = "INSERT INTO films_directors (film_id, director_id) VALUES (?, ?)";
-        jdbcTemplate.batchUpdate(sqlQuery, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                ps.setInt(1, film.getId());
-                ps.setInt(2, directors.get(i).getId());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return directors.size();
-            }
-        });
     }
 
     public Set<Director> getFilmDirectors(int filmId) {
