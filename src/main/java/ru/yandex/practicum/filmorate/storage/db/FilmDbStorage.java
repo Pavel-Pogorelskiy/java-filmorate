@@ -374,7 +374,6 @@ public class FilmDbStorage implements FilmStorage {
     public List<Film> searchFilm(String query, boolean searchByTitle, boolean searchByDirector) {
         String sqlStart = "SELECT f.film_id, f.name, f.description, f.releaseDate, " +
                 "f.duration, mp.mpa_id, mp.name as mpa_name, COUNT(l.user_id) AS rating, " +
-                "d.director_id, d.name " +
                 "FROM films as f " +
                 "JOIN mpa as mp on f.mpa = mp.mpa_id " +
                 "LEFT JOIN likes as l on f.film_id = l.film_id " +
