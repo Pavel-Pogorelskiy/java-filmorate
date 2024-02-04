@@ -113,8 +113,21 @@ public class FilmController {
 
     @GetMapping("/search")
     public List<Film> searchFilms(@RequestParam String query,
-                                 @RequestParam List<String> by) {
+                                  @RequestParam List<String> by) {
         log.info("Получен запрос на поиск фильма. Поисковой запрос {}, искать по {}.", query, by);
-        return filmService.searchFilms(query, by);
+
+        if (query == null || by == null || by.size() > 2) {
+            throw new RuntimeException("Условие поиска задано неверно!");
+        }
+
+        if (by.contains("director") && by.contains("title")) {
+            return filmService.searchFilm(query, true, true);
+        } else if (by.contains("director")) {
+            return filmService.searchFilm(query, false, true);
+        } else if (by.contains("title")) {
+            return filmService.searchFilm(query, true, false);
+        } else {
+            throw new RuntimeException("Условие поиска задано неверно: необходимо указать title, director или оба варианта.");
+        }
     }
 }

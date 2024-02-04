@@ -83,15 +83,7 @@ public class FilmService {
         return Set.copyOf(filmStorage.getCommonFilms(userId, friendId));
     }
 
-    public List<Film> searchFilms(String query, List<String> by) {
-        if (by.contains("director") && by.contains("title")) {
-            return filmStorage.searchFilm(query, true, true);
-        } else if (by.contains("director")) {
-            return filmStorage.searchFilm(query, false, true);
-        } else if (by.contains("title")) {
-            return filmStorage.searchFilm(query, true, false);
-        } else {
-            throw new RuntimeException("Условие поиска задано неверно: необходимо указать title, director или оба варианта.");
-        }
+    public List<Film> searchFilm(String query, boolean searchByTitle, boolean searchByDirectors) {
+        return filmStorage.searchFilm(query, searchByTitle, searchByDirectors);
     }
 }
