@@ -126,4 +126,27 @@ public class LikesDbStorage implements LikesStorage {
 
         return films;
     }
+
+    public List<Film> recommendationsFilms(int userId) {
+        String sql =
+                "SELECT f.film_id, f.name, description, releaseDate, duration, " +
+                        "mp.mpa_id, mp.name AS mpa_name \n" +
+                        "FROM likes l\n" +
+                        "LEFT JOIN films f ON l.film_id = f.film_id\n" +
+                        "LEFT JOIN mpa mp ON f.mpa = mp.mpa_id\n" +
+                        "WHERE l.user_id IN (SELECT l.user_id FROM likes l\n" +
+                        "WHERE l.film_id IN (SELECT film_id FROM likes\n" +
+                        "WHERE user_id = ?)\n" +
+                        "AND l.user_id != ?\n" +
+                        "GROUP BY l.user_id ORDER BY COUNT(l.film_id) DESC\n" +
+                        "LIMIT 1)\n" +
+                        "AND l.film_id NOT IN (SELECT film_id FROM likes\n" +
+                        "WHERE user_id = ?)";
+        List<Film> films = jdbcTemplate.query(sql, FilmDbStorage::createFilm, userId, userId, userId);
+        films = FilmDbStorage.fillGenres(films, jdbcTemplate);
+        for (Film film : films) {
+            film.setDirectors(filmDbStorage.getFilmDirectors(film.getId()));
+        }
+        return films;
+    }
 }
