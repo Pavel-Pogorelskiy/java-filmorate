@@ -7,10 +7,7 @@ import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.db.*;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class FilmService {
@@ -84,5 +81,9 @@ public class FilmService {
 
     public Set<Film> getCommonFilms(int userId, int friendId) {
         return Set.copyOf(filmStorage.getCommonFilms(userId, friendId));
+    }
+
+    public List<Film> searchFilm(String query, boolean searchByTitle, boolean searchByDirectors) {
+        return filmStorage.searchFilm(query, searchByTitle, searchByDirectors);
     }
 }
