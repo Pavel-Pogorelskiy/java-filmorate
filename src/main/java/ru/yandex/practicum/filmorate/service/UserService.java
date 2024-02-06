@@ -1,26 +1,23 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.db.FriendDbStorage;
-import ru.yandex.practicum.filmorate.storage.db.LikesDbStorage;
-import ru.yandex.practicum.filmorate.storage.db.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.FriendStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    @Autowired
-    private UserDbStorage userStorage;
-    @Autowired
-    private FriendDbStorage friendStorage;
-    @Autowired
-    private EventService eventService;
-    @Autowired
-    private LikesDbStorage likesDbStorage;
+    private final UserStorage userStorage;
+    private final FilmStorage filmStorage;
+    private final FriendStorage friendStorage;
+    private final EventService eventService;
 
     public void addFriend(int userId, int friendId) {
         userStorage.validateId(userId);
@@ -51,6 +48,6 @@ public class UserService {
 
     public List<Film> recommendationsFilms(int userId) {
         userStorage.validateId(userId);
-        return likesDbStorage.recommendationsFilms(userId);
+        return filmStorage.recommendationsFilms(userId);
     }
 }

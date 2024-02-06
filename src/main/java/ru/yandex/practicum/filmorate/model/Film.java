@@ -17,6 +17,7 @@ import java.util.*;
 @NoArgsConstructor
 public class Film extends BaseUnit {
     @NotEmpty
+    @Size(max = 100)
     private String name;
     @Size(max = 200)
     private String description;

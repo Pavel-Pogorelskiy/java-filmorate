@@ -3,12 +3,15 @@ package ru.yandex.practicum.filmorate.error;
 import lombok.extern.slf4j.Slf4j;
 import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exception.NotFoundDataException;
 import ru.yandex.practicum.filmorate.exception.ValidateDateException;
+
+import javax.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 @Slf4j
@@ -47,5 +50,11 @@ public class ErrorHandler {
     public ErrorResponse handlerPSQLException(final PSQLException exception) {
         log.info("{}", exception.getMessage());
         return new ErrorResponse(exception.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handlerResponseEntity(ConstraintViolationException ex) {
+        log.info("{}", ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

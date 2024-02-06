@@ -84,11 +84,9 @@ public class ReviewDbStorage implements ReviewStorage {
         if (filmId == 0) {
             sql = "select * from reviews order by useful desc limit ?";
             reviews = jdbcTemplate.query(sql, this::createReview, count);
-            log.info("Get all reviews.");
         } else {
             sql = "select * from reviews where film_id = ? order by useful desc limit ?";
             reviews = jdbcTemplate.query(sql, this::createReview, filmId, count);
-            log.info("Get reviews for film with id = {}.", filmId);
         }
 
         return reviews;
