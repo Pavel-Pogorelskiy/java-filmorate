@@ -9,11 +9,14 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.exception.NotFoundDataException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -22,7 +25,8 @@ class FilmDbStorageTest {
 
     @BeforeEach
     public void newDateBase() {
-        jdbcTemplate.update("drop table if exists mpa, films, likes,users,friends,genre,genre_link, DIRECTORS, FILMS_DIRECTORS, reviews,like_review, events;\n" +
+        jdbcTemplate.update("drop table if exists mpa, films, likes,users,friends,genre,genre_link, " +
+                "DIRECTORS, FILMS_DIRECTORS, reviews,like_review, events;\n" +
                 "\n" +
                 "CREATE TABLE IF NOT EXISTS mpa (\n" +
                 "  mpa_id integer PRIMARY KEY,\n" +
@@ -200,5 +204,206 @@ class FilmDbStorageTest {
         Assertions.assertThrows(
                 NotFoundDataException.class,
                 () -> filmDbStorage.get(1), "Фильма с id = 1 не существует");
+    }
+
+    @Test
+    void getPopularFilmsFilteredByGenre() {
+
+        Film firstFilm = Film.builder()
+                .id(1)
+                .name("First")
+                .description("Первый пошел")
+                .releaseDate(LocalDate.of(1990, 1, 1))
+                .duration(120)
+                .mpa(Mpa.builder()
+                        .id(2)
+                        .build())
+                .genres(List.of(Genre.builder()
+                        .id(1)
+                        .build()))
+                .build();
+
+        Film secondFilm = Film.builder()
+                .id(2)
+                .name("Second")
+                .description("Второй догоняет")
+                .releaseDate(LocalDate.of(2024, 1, 1))
+                .duration(200)
+                .mpa(Mpa.builder()
+                        .id(4)
+                        .build())
+                .genres(List.of(Genre.builder()
+                        .id(2)
+                        .build()))
+                .build();
+
+        FilmDbStorage filmDbStorage = new FilmDbStorage(jdbcTemplate);
+        filmDbStorage.create(firstFilm);
+        firstFilm = filmDbStorage.get(firstFilm.getId());
+        filmDbStorage.create(secondFilm);
+        secondFilm = filmDbStorage.get(secondFilm.getId());
+
+        List<Film> savedFilms = filmDbStorage.getFilmsFilteredByGenre(2, 2);
+
+        assertEquals(1, savedFilms.size(), "Неверное количество фильмов");
+
+        assertThat(savedFilms.get(0))
+                .isNotNull()
+                .usingRecursiveComparison()
+                .isEqualTo(secondFilm);
+
+        savedFilms = filmDbStorage.getFilmsFilteredByGenre(2, 1);
+
+        assertEquals(1, savedFilms.size(), "Неверное количество фильмов");
+
+        assertThat(savedFilms.get(0))
+                .isNotNull()
+                .usingRecursiveComparison()
+                .isEqualTo(firstFilm);
+
+        savedFilms = filmDbStorage.getFilmsFilteredByGenre(2, 4);
+
+        assertEquals(0, savedFilms.size(), "Неверное количество фильмов");
+    }
+
+    @Test
+    void getPopularFilmsFilteredByYear() {
+
+        Film firstFilm = Film.builder()
+                .id(1)
+                .name("First")
+                .description("Первый пошел")
+                .releaseDate(LocalDate.of(1990, 1, 1))
+                .duration(120)
+                .mpa(Mpa.builder()
+                        .id(2)
+                        .build())
+                .genres(List.of(Genre.builder()
+                        .id(1)
+                        .build()))
+                .build();
+
+        Film secondFilm = Film.builder()
+                .id(2)
+                .name("Second")
+                .description("Второй догоняет")
+                .releaseDate(LocalDate.of(2024, 1, 1))
+                .duration(200)
+                .mpa(Mpa.builder()
+                        .id(4)
+                        .build())
+                .genres(List.of(Genre.builder()
+                        .id(2)
+                        .build()))
+                .build();
+
+        FilmDbStorage filmDbStorage = new FilmDbStorage(jdbcTemplate);
+        filmDbStorage.create(firstFilm);
+        firstFilm = filmDbStorage.get(firstFilm.getId());
+        filmDbStorage.create(secondFilm);
+        secondFilm = filmDbStorage.get(secondFilm.getId());
+
+
+        List<Film> savedFilms = filmDbStorage.getFilmsFilteredByYear(2, 2024);
+
+        assertEquals(1, savedFilms.size(), "Неверное количество фильмов");
+
+        assertThat(savedFilms.get(0))
+                .isNotNull()
+                .usingRecursiveComparison()
+                .isEqualTo(secondFilm);
+
+        savedFilms = filmDbStorage.getFilmsFilteredByYear(2, 1990);
+
+        assertEquals(1, savedFilms.size(), "Неверное количество фильмов");
+
+        assertThat(savedFilms.get(0))
+                .isNotNull()
+                .usingRecursiveComparison()
+                .isEqualTo(firstFilm);
+
+        savedFilms = filmDbStorage.getFilmsFilteredByYear(2, 2500);
+
+        assertEquals(0, savedFilms.size(), "Неверное количество фильмов");
+    }
+
+    @Test
+    void getPopularFilmsFilteredByGenreAndYear() {
+
+        Film firstFilm = Film.builder()
+                .id(1)
+                .name("First")
+                .description("Первый пошел")
+                .releaseDate(LocalDate.of(1990, 1, 1))
+                .duration(120)
+                .mpa(Mpa.builder()
+                        .id(2)
+                        .build())
+                .genres(List.of(Genre.builder()
+                        .id(1)
+                        .build()))
+                .build();
+
+        Film secondFilm = Film.builder()
+                .id(2)
+                .name("Second")
+                .description("Второй догоняет")
+                .releaseDate(LocalDate.of(2024, 1, 1))
+                .duration(200)
+                .mpa(Mpa.builder()
+                        .id(4)
+                        .build())
+                .genres(List.of(Genre.builder()
+                        .id(2)
+                        .build()))
+                .build();
+
+        Film thirdFilm = Film.builder()
+                .id(2)
+                .name("Second")
+                .description("Второй догоняет")
+                .releaseDate(LocalDate.of(2000, 1, 1))
+                .duration(200)
+                .mpa(Mpa.builder()
+                        .id(4)
+                        .build())
+                .genres(List.of(Genre.builder()
+                        .id(2)
+                        .build()))
+                .build();
+
+        FilmDbStorage filmDbStorage = new FilmDbStorage(jdbcTemplate);
+        filmDbStorage.create(firstFilm);
+        firstFilm = filmDbStorage.get(firstFilm.getId());
+        filmDbStorage.create(secondFilm);
+        secondFilm = filmDbStorage.get(secondFilm.getId());
+        filmDbStorage.create(thirdFilm);
+        thirdFilm = filmDbStorage.get(thirdFilm.getId());
+
+        List<Film> savedFilms = filmDbStorage.getFilmsFilteredByGenreAndYear(2, 2, 2000);
+
+        assertEquals(1, savedFilms.size(), "Неверное количество фильмов");
+
+        assertThat(savedFilms.get(0))
+                .isNotNull()
+                .usingRecursiveComparison()
+                .isEqualTo(thirdFilm);
+
+        savedFilms = filmDbStorage.getFilmsFilteredByGenreAndYear(2, 2, 2024);
+
+        assertEquals(1, savedFilms.size(), "Неверное количество фильмов");
+
+        assertThat(savedFilms.get(0))
+                .isNotNull()
+                .usingRecursiveComparison()
+                .isEqualTo(secondFilm);
+
+        savedFilms = filmDbStorage.getFilmsFilteredByGenreAndYear(2, 3, 2024);
+
+        assertEquals(0, savedFilms.size(), "Неверное количество фильмов");
+
+        savedFilms = filmDbStorage.getFilmsFilteredByGenreAndYear(2, 1, 2024);
+
+        assertEquals(0, savedFilms.size(), "Неверное количество фильмов");
     }
 }

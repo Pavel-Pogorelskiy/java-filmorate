@@ -1,23 +1,21 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Director;
 
-import ru.yandex.practicum.filmorate.storage.DirectorStogare;
+import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-@Component
+@Repository
 @RequiredArgsConstructor
-@Primary
-public class DirectorDbStorage implements DirectorStogare {
+public class DirectorDbStorage implements DirectorStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -61,7 +59,7 @@ public class DirectorDbStorage implements DirectorStogare {
                 director.getName(), director.getId());
         return director;
     }
-
+    @Override
     public boolean isRegistered(int directorId) {
         String sqlQuery = "SELECT * FROM directors WHERE director_id = ?";
         SqlRowSet genreRow = jdbcTemplate.queryForRowSet(sqlQuery, directorId);

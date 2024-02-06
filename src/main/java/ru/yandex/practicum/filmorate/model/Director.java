@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class Director extends BaseUnit {
     @NotBlank
+    @Size(max = 50)
     private String name;
 
     public Map<String, Object> directorRowMap() {

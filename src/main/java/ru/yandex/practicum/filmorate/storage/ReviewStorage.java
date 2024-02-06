@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ReviewStorage extends AbstractStorage<Review> {
     List<Review> getDataForFilmId(Integer filmId, int count);
+
+    void validateId(int id);
 }

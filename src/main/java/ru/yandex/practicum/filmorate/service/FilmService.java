@@ -1,27 +1,25 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundDataException;
 import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.db.*;
+import ru.yandex.practicum.filmorate.storage.DirectorStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.LikesStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class FilmService {
-    @Autowired
-    private FilmDbStorage filmStorage;
-    @Autowired
-    private UserDbStorage userStorage;
-    @Autowired
-    private LikesDbStorage likesStorage;
-    @Autowired
-    private DirectorDbStorage directorStorage;
-
-    @Autowired
-    private EventService eventService;
+    private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
+    private final LikesStorage likesStorage;
+    private final DirectorStorage directorStorage;
+    private final EventService eventService;
 
     public void addLike(int filmId, int userId) {
         userStorage.validateId(userId);
@@ -40,17 +38,17 @@ public class FilmService {
     }
 
     public List<Film> getFilms(int count) {
-        return likesStorage.getFilms(count);
+        return filmStorage.getFilms(count);
     }
 
     public List<Film> getFilteredFilms(Integer count, Integer genreId, Integer year) {
 
         if (genreId != null && year == null) {
-            return likesStorage.getFilmsFilteredByGenre(count, genreId);
+            return filmStorage.getFilmsFilteredByGenre(count, genreId);
         } else if (genreId == null && year != null) {
-            return likesStorage.getFilmsFilteredByYear(count, year);
+            return filmStorage.getFilmsFilteredByYear(count, year);
         } else {
-            return likesStorage.getFilmsFilteredByGenreAndYear(count, genreId, year);
+            return filmStorage.getFilmsFilteredByGenreAndYear(count, genreId, year);
         }
     }
 

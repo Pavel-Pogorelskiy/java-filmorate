@@ -81,6 +81,7 @@ public class UserDbStorage implements UserStorage {
                 .build();
     }
 
+    @Override
     public void validateId(int id) {
         List<User> users = jdbcTemplate.query(
                 "Select * From users Where user_id = ?",

@@ -1,21 +1,21 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Event;
-import ru.yandex.practicum.filmorate.storage.db.*;
+import ru.yandex.practicum.filmorate.storage.EventsStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.*;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class EventService {
 
-    @Autowired
-    EventsDbStorage eventsStorage;
+    private final EventsStorage eventsStorage;
 
-    @Autowired
-    UserDbStorage userStorage;
+    private final UserStorage userStorage;
 
     public Event addLikeEvent(int userId, int filmId, Event.EventOperation operation) {
 

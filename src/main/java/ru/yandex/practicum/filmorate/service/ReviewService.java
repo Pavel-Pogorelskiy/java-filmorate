@@ -1,36 +1,24 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.storage.db.FilmDbStorage;
-import ru.yandex.practicum.filmorate.storage.db.LikeReviewDbStorage;
-import ru.yandex.practicum.filmorate.storage.db.ReviewDbStorage;
-import ru.yandex.practicum.filmorate.storage.db.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.LikeReviewStorage;
+import ru.yandex.practicum.filmorate.storage.ReviewStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewService {
-    ReviewDbStorage reviewStorage;
-    FilmDbStorage filmStorage;
-    UserDbStorage userStorage;
-    LikeReviewDbStorage likeReviewDbStorage;
-
-    @Autowired
-    private EventService eventService;
-
-    public ReviewService(ReviewDbStorage reviewStorage,
-                         UserDbStorage userStorage,
-                         FilmDbStorage filmStorage,
-                         LikeReviewDbStorage likeReviewDbStorage) {
-        this.reviewStorage = reviewStorage;
-        this.userStorage = userStorage;
-        this.filmStorage = filmStorage;
-        this.likeReviewDbStorage = likeReviewDbStorage;
-    }
-
+    private final ReviewStorage reviewStorage;
+    private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
+    private final LikeReviewStorage likeReviewDbStorage;
+    private final EventService eventService;
 
     public Review createReview(Review data) {
         filmStorage.validateId(data.getFilmId());

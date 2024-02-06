@@ -21,7 +21,9 @@ public class User extends BaseUnit {
     @Email
     private String email;
     @NotBlank
+    @Size(max = 50)
     private String login;
+    @Size(max = 50)
     private String name;
     @PastOrPresent
     private LocalDate birthday;
