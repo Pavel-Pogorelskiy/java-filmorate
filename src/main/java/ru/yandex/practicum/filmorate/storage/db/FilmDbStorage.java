@@ -153,6 +153,7 @@ public class FilmDbStorage implements FilmStorage {
                 .name(rs.getString("name"))
                 .build();
     }
+
     private List<Genre> addGenreDb(final List<Genre> genres, int filmId) {
         jdbcTemplate.batchUpdate(
                 "insert into genre_link (film_id, genre_id) values (?, ?)",
@@ -168,6 +169,7 @@ public class FilmDbStorage implements FilmStorage {
                 });
         return genres;
     }
+
     public void addFilmDirector(Film film) {
         List<Director> directors = List.copyOf(film.getDirectors());
         if (!directors.isEmpty()) {
@@ -208,7 +210,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     public Set<Director> getFilmDirectors(int filmId) {
-        Set<Director> filmDirector = new TreeSet<>(Comparator.comparingInt(Director::getId));
+        Set<Director> filmDirector = new HashSet<>();
         String sqlQuery = "SELECT * FROM directors WHERE director_id IN " +
                 "(SELECT director_id FROM films_directors WHERE film_id = ?)";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, filmId);

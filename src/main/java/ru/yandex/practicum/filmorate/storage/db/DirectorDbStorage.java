@@ -59,6 +59,7 @@ public class DirectorDbStorage implements DirectorStorage {
                 director.getName(), director.getId());
         return director;
     }
+
     @Override
     public boolean isRegistered(int directorId) {
         String sqlQuery = "SELECT * FROM directors WHERE director_id = ?";
