@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.controller.SortType;
 import ru.yandex.practicum.filmorate.exception.NotFoundDataException;
 import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -52,7 +53,7 @@ public class FilmService {
         }
     }
 
-    public Collection<Film> getFilmsByDirector(int directorId, String sortBy) {
+    public Collection<Film> getFilmsByDirector(int directorId, SortType sortBy) {
         if (directorStorage.isRegistered(directorId)) {
             List<Film> films = filmStorage.getFilmsByDirector(directorId);
             if (sortBy != null) {
@@ -64,12 +65,12 @@ public class FilmService {
         }
     }
 
-    private void sortFilms(List<Film> films, String sortBy) {
+    private void sortFilms(List<Film> films, SortType sortBy) {
         switch (sortBy) {
-            case "year":
+            case year:
                 films.sort(Comparator.comparing(Film::getReleaseDate));
                 break;
-            case "likes":
+            case likes:
                 films.sort((f1, f2) -> f2.getLikes().size() - f1.getLikes().size());
                 break;
             default:
