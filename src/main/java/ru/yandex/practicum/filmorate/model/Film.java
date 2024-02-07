@@ -28,7 +28,7 @@ public class Film extends BaseUnit {
     @JsonIgnore
     @NotNull
     @Builder.Default
-    private Set<Integer> likes = new HashSet<>();
+    private List<Integer> marks = new ArrayList<>();
     @NotNull
     private Mpa mpa;
     @NotNull

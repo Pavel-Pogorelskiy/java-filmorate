@@ -22,9 +22,10 @@ CREATE TABLE IF NOT EXISTS users (
   birthday date NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS likes (
+CREATE TABLE IF NOT EXISTS marks (
   film_id integer REFERENCES films (film_id) on delete cascade,
   user_id integer REFERENCES users (user_id) on delete cascade,
+  mark INTEGER CHECK (mark >= 1 AND mark <= 10),
   PRIMARY KEY (film_id, user_id)
 );
 
