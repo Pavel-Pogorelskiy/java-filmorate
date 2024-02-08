@@ -28,7 +28,8 @@ public class Film extends BaseUnit {
     @JsonIgnore
     @NotNull
     @Builder.Default
-    private List<Integer> marks = new ArrayList<>();
+    private List<Integer> likes = new ArrayList<>();
+    private Float mark;
     @NotNull
     private Mpa mpa;
     @NotNull

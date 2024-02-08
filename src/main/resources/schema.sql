@@ -1,4 +1,4 @@
-drop table if exists mpa, films, marks, users, friends, genre, genre_link, directors, films_directors,
+drop table if exists mpa, films, likes, marks, users, friends, genre, genre_link, directors, films_directors,
 reviews, like_review, events;
 
 CREATE TABLE IF NOT EXISTS mpa (
@@ -20,6 +20,12 @@ CREATE TABLE IF NOT EXISTS users (
   login varchar(50) NOT NULL,
   name varchar(50) NOT NULL,
   birthday date NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS likes (
+  film_id integer REFERENCES films (film_id) on delete cascade,
+  user_id integer REFERENCES users (user_id) on delete cascade,
+  PRIMARY KEY (film_id, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS marks (

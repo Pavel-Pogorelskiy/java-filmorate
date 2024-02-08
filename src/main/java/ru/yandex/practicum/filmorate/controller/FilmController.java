@@ -1,12 +1,14 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidateDateException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.MarksService;
 import ru.yandex.practicum.filmorate.storage.db.FilmDbStorage;
 
 import javax.validation.Valid;
@@ -25,6 +27,10 @@ public class FilmController {
 
     @Autowired
     private FilmService filmService;
+
+    @Autowired
+    private MarksService marksService;
+
     @Autowired
     private FilmDbStorage filmStorage;
     private static final LocalDate DATE_FIRST_RELEASE = LocalDate.of(1895, 12, 28);
@@ -64,13 +70,31 @@ public class FilmController {
         filmService.deleteLike(id, userId);
     }
 
+    @PostMapping(value = "/{id}/mark/{userId}")
+    public void addMark(@PathVariable int id,@PathVariable int userId,
+                        @RequestParam @Range(min = 1, max = 10) int mark) {
+        marksService.addMarkFilm(id, userId, mark);
+    }
+
+    @PutMapping(value = "/{id}/mark/{userId}")
+    public void updateMark(@PathVariable int id,@PathVariable int userId,
+                            @RequestParam @Range(min = 1, max = 10) int mark) {
+
+        marksService.updateMarkFilm(id, userId, mark);
+    }
+
+    @DeleteMapping("/{id}/mark/{userId}")
+    public void deleteMark(@PathVariable int id, @PathVariable int userId) {
+        marksService.removeMarkFilm(id, userId);
+    }
+
     @GetMapping(value = "/popular")
     public List<Film> getPopularFilms(@RequestParam(value = "count", defaultValue = "10")
                                           Integer count,
                                       @RequestParam(value = "genreId", required = false)
                                       @Positive Integer genreId,
                                       @Valid @RequestParam(value = "year", required = false)
-                                          @Min(1895) Integer year) {
+                                      @Min(1895) Integer year) {
 
         if (genreId == null && year == null) {
             return filmService.getFilms(count);
