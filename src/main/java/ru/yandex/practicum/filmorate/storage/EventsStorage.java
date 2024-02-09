@@ -6,5 +6,5 @@ import java.util.List;
 public interface EventsStorage {
     Event addEvent(Event event);
 
-    List<Event> getEventsUserFriends(int userId);
+    List<Event> getEventsUser(int userId);
 }

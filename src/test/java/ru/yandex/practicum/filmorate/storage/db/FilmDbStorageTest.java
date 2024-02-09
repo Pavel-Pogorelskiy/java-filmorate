@@ -243,7 +243,7 @@ class FilmDbStorageTest {
         filmDbStorage.create(secondFilm);
         secondFilm = filmDbStorage.get(secondFilm.getId());
 
-        List<Film> savedFilms = filmDbStorage.getFilmsFilteredByGenre(2, 2);
+        List<Film> savedFilms = filmDbStorage.getPopularFilmsFilteredByGenre(2, 2);
 
         assertEquals(1, savedFilms.size(), "Неверное количество фильмов");
 
@@ -252,7 +252,7 @@ class FilmDbStorageTest {
                 .usingRecursiveComparison()
                 .isEqualTo(secondFilm);
 
-        savedFilms = filmDbStorage.getFilmsFilteredByGenre(2, 1);
+        savedFilms = filmDbStorage.getPopularFilmsFilteredByGenre(2, 1);
 
         assertEquals(1, savedFilms.size(), "Неверное количество фильмов");
 
@@ -261,7 +261,7 @@ class FilmDbStorageTest {
                 .usingRecursiveComparison()
                 .isEqualTo(firstFilm);
 
-        savedFilms = filmDbStorage.getFilmsFilteredByGenre(2, 4);
+        savedFilms = filmDbStorage.getPopularFilmsFilteredByGenre(2, 4);
 
         assertEquals(0, savedFilms.size(), "Неверное количество фильмов");
     }
@@ -304,7 +304,7 @@ class FilmDbStorageTest {
         secondFilm = filmDbStorage.get(secondFilm.getId());
 
 
-        List<Film> savedFilms = filmDbStorage.getFilmsFilteredByYear(2, 2024);
+        List<Film> savedFilms = filmDbStorage.getPopularFilmsFilteredByYear(2, 2024);
 
         assertEquals(1, savedFilms.size(), "Неверное количество фильмов");
 
@@ -313,7 +313,7 @@ class FilmDbStorageTest {
                 .usingRecursiveComparison()
                 .isEqualTo(secondFilm);
 
-        savedFilms = filmDbStorage.getFilmsFilteredByYear(2, 1990);
+        savedFilms = filmDbStorage.getPopularFilmsFilteredByYear(2, 1990);
 
         assertEquals(1, savedFilms.size(), "Неверное количество фильмов");
 
@@ -322,7 +322,7 @@ class FilmDbStorageTest {
                 .usingRecursiveComparison()
                 .isEqualTo(firstFilm);
 
-        savedFilms = filmDbStorage.getFilmsFilteredByYear(2, 2500);
+        savedFilms = filmDbStorage.getPopularFilmsFilteredByYear(2, 2500);
 
         assertEquals(0, savedFilms.size(), "Неверное количество фильмов");
     }
@@ -380,7 +380,7 @@ class FilmDbStorageTest {
         filmDbStorage.create(thirdFilm);
         thirdFilm = filmDbStorage.get(thirdFilm.getId());
 
-        List<Film> savedFilms = filmDbStorage.getFilmsFilteredByGenreAndYear(2, 2, 2000);
+        List<Film> savedFilms = filmDbStorage.getPopularFilmsFilteredByGenreAndYear(2, 2, 2000);
 
         assertEquals(1, savedFilms.size(), "Неверное количество фильмов");
 
@@ -389,7 +389,7 @@ class FilmDbStorageTest {
                 .usingRecursiveComparison()
                 .isEqualTo(thirdFilm);
 
-        savedFilms = filmDbStorage.getFilmsFilteredByGenreAndYear(2, 2, 2024);
+        savedFilms = filmDbStorage.getPopularFilmsFilteredByGenreAndYear(2, 2, 2024);
 
         assertEquals(1, savedFilms.size(), "Неверное количество фильмов");
 
@@ -398,11 +398,11 @@ class FilmDbStorageTest {
                 .usingRecursiveComparison()
                 .isEqualTo(secondFilm);
 
-        savedFilms = filmDbStorage.getFilmsFilteredByGenreAndYear(2, 3, 2024);
+        savedFilms = filmDbStorage.getPopularFilmsFilteredByGenreAndYear(2, 3, 2024);
 
         assertEquals(0, savedFilms.size(), "Неверное количество фильмов");
 
-        savedFilms = filmDbStorage.getFilmsFilteredByGenreAndYear(2, 1, 2024);
+        savedFilms = filmDbStorage.getPopularFilmsFilteredByGenreAndYear(2, 1, 2024);
 
         assertEquals(0, savedFilms.size(), "Неверное количество фильмов");
     }

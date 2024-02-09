@@ -60,16 +60,6 @@ public class FilmController {
         return filmStorage.get(id);
     }
 
-    @PutMapping(value = "/{id}/like/{userId}")
-    public void addLike(@PathVariable int id,@PathVariable int userId) {
-        filmService.addLike(id, userId);
-    }
-
-    @DeleteMapping("/{id}/like/{userId}")
-    public void deleteLike(@PathVariable int id,@PathVariable int userId) {
-        filmService.deleteLike(id, userId);
-    }
-
     @PostMapping(value = "/{id}/mark/{userId}")
     public void addMark(@PathVariable int id,@PathVariable int userId,
                         @RequestParam @Range(min = 1, max = 10) int mark) {
@@ -90,16 +80,16 @@ public class FilmController {
 
     @GetMapping(value = "/popular")
     public List<Film> getPopularFilms(@RequestParam(value = "count", defaultValue = "10")
-                                          Integer count,
+                                      Integer count,
                                       @RequestParam(value = "genreId", required = false)
                                       @Positive Integer genreId,
                                       @Valid @RequestParam(value = "year", required = false)
                                       @Min(1895) Integer year) {
 
         if (genreId == null && year == null) {
-            return filmService.getFilms(count);
+            return filmService.getPopularFilms(count);
         } else {
-            return filmService.getFilteredFilms(count, genreId, year);
+            return filmService.getPopularFilteredFilms(count, genreId, year);
         }
     }
 

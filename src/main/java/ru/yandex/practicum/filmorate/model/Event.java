@@ -33,9 +33,9 @@ public class Event extends BaseUnit {
     }
 
     public enum EventType {
-        LIKE,
         REVIEW,
-        FRIEND
+        FRIEND,
+        MARK
     }
 
     public enum EventOperation {

@@ -147,6 +147,21 @@ public class FilmDbStorage implements FilmStorage {
 
     }
 
+    private Film createFilmWithMark(ResultSet rs, int RowNum) throws SQLException {
+        return Film.builder()
+                .id(rs.getInt("film_id"))
+                .name(rs.getString("name"))
+                .description(rs.getString("description"))
+                .releaseDate(rs.getDate("releaseDate").toLocalDate())
+                .duration(rs.getInt("duration"))
+                .mpa(Mpa.builder()
+                        .id(rs.getInt("mpa_id"))
+                        .name(rs.getString("mpa_name"))
+                        .build())
+                .mark(rs.getFloat("mark"))
+                .build();
+    }
+
     static Genre createGenre(ResultSet rs, int RowNum) throws SQLException {
         return Genre.builder()
                 .id(rs.getInt("genre_id"))
@@ -387,24 +402,26 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getFilms(int limit) {
+    public List<Film> getPopularFilms(int count) {
+
         List<Film> films = jdbcTemplate.query(
-                "select f.film_id, r.rate, f.name, " +
-                        "f.description, f.releaseDate, f.duration, " +
-                        "m.mpa_id, m.name as mpa_name from " +
-                        "(select l.film_id as film_id, " +
-                        "count(l.user_id) as rate from likes l " +
-                        "group by l.film_id) as r " +
-                        "right join films as f on r.film_id = f.film_id " +
-                        "join mpa m on f.mpa = m.mpa_id  " +
-                        "order by r.rate desc limit ?",
-                FilmDbStorage::createFilm, limit);
+                "SELECT f.film_id, f.name, " +
+                    "f.description, f.releaseDate, f.duration, " +
+                    "mp.mpa_id, mp.name as mpa_name, mark FROM " +
+                    "(SELECT m.film_id as film_id, " +
+                    "AVG(m.mark) AS mark FROM marks AS m " +
+                    "GROUP BY m.film_id) AS r " +
+                    "RIGHT JOIN films AS f ON r.film_id = f.film_id " +
+                    "JOIN mpa AS mp ON f.mpa = mp.mpa_id  " +
+                    "ORDER BY mark DESC LIMIT ?;",
+                this::createFilmWithMark, count);
+
         FilmDbStorage.fillGenres(films, jdbcTemplate);
         return FilmDbStorage.fillDirectors(films, jdbcTemplate);
     }
 
     @Override
-    public List<Film> getFilmsFilteredByYear(int limit, int year) {
+    public List<Film> getPopularFilmsFilteredByYear(int limit, int year) {
 
         String sql =
                 "SELECT f.film_id, r.rate, f.name, " +
@@ -424,7 +441,7 @@ public class FilmDbStorage implements FilmStorage {
         return FilmDbStorage.fillDirectors(films, jdbcTemplate);
     }
 
-    public List<Film> getFilmsFilteredByGenre(int limit, int genreId) {
+    public List<Film> getPopularFilmsFilteredByGenre(int limit, int genreId) {
 
         String sql =
                 "SELECT mp.* FROM " +
@@ -450,7 +467,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getFilmsFilteredByGenreAndYear(int limit, int genreId, int year) {
+    public List<Film> getPopularFilmsFilteredByGenreAndYear(int limit, int genreId, int year) {
 
         String sql =
                 "SELECT mp.* FROM " +

@@ -41,7 +41,7 @@ public class EventsDbStorage implements EventsStorage {
     }
 
     @Override
-    public List<Event> getEventsUserFriends(int userId) {
+    public List<Event> getEventsUser(int userId) {
 
         return jdbcTemplate.query(
                 "SELECT * FROM events " +

@@ -9,17 +9,17 @@ public interface FilmStorage extends AbstractStorage<Film> {
 
     void validateId(int filmId);
 
-    List<Film> getFilmsFilteredByGenre(int limit, int genreId);
+    List<Film> getPopularFilmsFilteredByGenre(int limit, int genreId);
 
-    List<Film> getFilmsFilteredByYear(int limit, int year);
+    List<Film> getPopularFilmsFilteredByYear(int limit, int year);
 
-    List<Film> getFilmsFilteredByGenreAndYear(int limit, int genreId, int year);
-
-    List<Film> getFilms(int count);
+    List<Film> getPopularFilmsFilteredByGenreAndYear(int limit, int genreId, int year);
 
     List<Film> getCommonFilms(int userId, int friendId);
 
     List<Film> searchFilm(String query, boolean searchByTitle, boolean searchByDirectors);
 
     List<Film> recommendationsFilms(int userId);
+
+    List<Film> getPopularFilms(int count);
 }

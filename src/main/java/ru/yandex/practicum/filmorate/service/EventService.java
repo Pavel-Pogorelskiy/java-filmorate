@@ -17,12 +17,12 @@ public class EventService {
 
     private final UserStorage userStorage;
 
-    public Event addLikeEvent(int userId, int filmId, Event.EventOperation operation) {
+    public Event addMarkEvent(int userId, int filmId, Event.EventOperation operation) {
 
         return eventsStorage.addEvent(Event.builder()
                 .timestamp(Instant.now().toEpochMilli())
                 .userId(userId)
-                .eventType(Event.EventType.LIKE)
+                .eventType(Event.EventType.MARK)
                 .operation(operation)
                 .entityId(filmId)
                 .build());
@@ -54,6 +54,6 @@ public class EventService {
     public List<Event> getEventsUserFriends(int userId) {
 
         userStorage.validateId(userId);
-        return eventsStorage.getEventsUserFriends(userId);
+        return eventsStorage.getEventsUser(userId);
     }
 }

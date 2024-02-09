@@ -127,7 +127,7 @@ public class EventsDbStorageTest {
         Event firstEvent = eventsDbStorage.addEvent(Event.builder()
                 .timestamp(Instant.now().toEpochMilli())
                 .userId(user.getId())
-                .eventType(Event.EventType.LIKE)
+                .eventType(Event.EventType.MARK)
                 .operation(Event.EventOperation.ADD)
                 .entityId(2)
                 .build());
@@ -140,7 +140,7 @@ public class EventsDbStorageTest {
                 .entityId(6)
                 .build());
 
-        List<Event> events = eventsDbStorage.getEventsUserFriends(user.getId());
+        List<Event> events = eventsDbStorage.getEventsUser(user.getId());
 
         assertEquals(2, events.size(), "Wrong count of event");
 
