@@ -47,11 +47,11 @@ public class FilmService {
 
     private void sortFilms(List<Film> films, SortType sortBy) {
         switch (sortBy) {
-            case year:
+            case YEAR:
                 films.sort(Comparator.comparing(Film::getReleaseDate));
                 break;
-            case likes:
-                films.sort((f1, f2) -> f2.getLikes().size() - f1.getLikes().size());
+            case MARK:
+                films.sort(Comparator.comparing(Film::getMark).reversed());
                 break;
             default:
                 throw new IllegalArgumentException("Invalid sort parameter: " + sortBy);
