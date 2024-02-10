@@ -379,74 +379,71 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getPopularFilmsFilteredByYear(int limit, int year) {
+    public List<Film> getPopularFilmsFilteredByYear(int count, int year) {
 
-        String sql =
-                "SELECT f.film_id, r.rate, f.name, " +
+        String sql =    "SELECT f.film_id, f.name, " +
                         "f.description, f.releaseDate, f.duration, " +
-                        "m.mpa_id, m.name AS mpa_name " +
-                        "FROM (select l.film_id as film_id, " +
-                        "count(l.user_id) AS rate FROM likes AS l " +
-                        "GROUP BY l.film_id) AS r " +
-                        "RIGHT JOIN films as f ON r.film_id = f.film_id " +
-                        "JOIN mpa m ON f.mpa = m.mpa_id " +
+                        "mp.mpa_id, mp.name as mpa_name, mark FROM " +
+                        "(SELECT m.film_id as film_id, " +
+                        "AVG(m.mark) AS mark FROM marks AS m " +
+                        "GROUP BY m.film_id) AS r " +
+                        "RIGHT JOIN films AS f ON r.film_id = f.film_id " +
+                        "JOIN mpa AS mp ON f.mpa = mp.mpa_id  " +
                         "WHERE EXTRACT(YEAR FROM f.releaseDate) = ? "  +
-                        "ORDER BY r.rate DESC " +
-                        "LIMIT ?;";
+                        "ORDER BY mark DESC LIMIT ?;";
 
-        List<Film> films = jdbcTemplate.query(sql, FilmDbStorage::createFilm, year, limit);
+        List<Film> films = jdbcTemplate.query(sql, this::createFilmWithMark, year, count);
         FilmDbStorage.fillGenres(films, jdbcTemplate);
         return FilmDbStorage.fillDirectors(films, jdbcTemplate);
     }
 
-    public List<Film> getPopularFilmsFilteredByGenre(int limit, int genreId) {
+    public List<Film> getPopularFilmsFilteredByGenre(int count, int genreId) {
 
-        String sql =
-                "SELECT mp.* FROM " +
+        String sql =    "SELECT mp.* FROM " +
 
-                        "(SELECT f.film_id, r.rate, f.name, " +
+                        "(SELECT f.film_id, f.name, " +
                         "f.description, f.releaseDate, f.duration, " +
-                        "m.mpa_id, m.name AS mpa_name " +
-                        "FROM (select l.film_id as film_id, " +
-                        "count(l.user_id) AS rate FROM likes AS l " +
-                        "GROUP BY l.film_id) AS r " +
-                        "RIGHT JOIN films as f ON r.film_id = f.film_id " +
-                        "JOIN mpa m ON f.mpa = m.mpa_id) AS mp " +
+                        "mp.mpa_id, mp.name as mpa_name, mark FROM " +
+                        "(SELECT m.film_id as film_id, " +
+                        "AVG(m.mark) AS mark FROM marks AS m " +
+                        "GROUP BY m.film_id) AS r " +
+                        "RIGHT JOIN films AS f ON r.film_id = f.film_id " +
+                        "JOIN mpa AS mp ON f.mpa = mp.mpa_id) AS mp " +
 
                         "WHERE mp.film_id IN " +
                         "(SELECT film_id FROM genre_link " +
                         "WHERE genre_id = ?) " +
-                        "ORDER BY mp.rate DESC " +
+                        "ORDER BY mp.mark DESC " +
                         "LIMIT ?;";
 
-        List<Film> films = jdbcTemplate.query(sql, FilmDbStorage::createFilm, genreId, limit);
+        List<Film> films = jdbcTemplate.query(sql, this::createFilmWithMark, genreId, count);
         FilmDbStorage.fillGenres(films, jdbcTemplate);
         return FilmDbStorage.fillDirectors(films, jdbcTemplate);
     }
 
     @Override
-    public List<Film> getPopularFilmsFilteredByGenreAndYear(int limit, int genreId, int year) {
+    public List<Film> getPopularFilmsFilteredByGenreAndYear(int count, int genreId, int year) {
 
         String sql =
                 "SELECT mp.* FROM " +
 
-                        "(SELECT f.film_id, r.rate, f.name, " +
+                        "(SELECT f.film_id, f.name, " +
                         "f.description, f.releaseDate, f.duration, " +
-                        "m.mpa_id, m.name AS mpa_name " +
-                        "FROM (select l.film_id as film_id, " +
-                        "count(l.user_id) AS rate FROM likes AS l " +
-                        "GROUP BY l.film_id) AS r " +
-                        "RIGHT JOIN films as f ON r.film_id = f.film_id " +
-                        "JOIN mpa m ON f.mpa = m.mpa_id " +
+                        "mp.mpa_id, mp.name as mpa_name, mark FROM " +
+                        "(SELECT m.film_id as film_id, " +
+                        "AVG(m.mark) AS mark FROM marks AS m " +
+                        "GROUP BY m.film_id) AS r " +
+                        "RIGHT JOIN films AS f ON r.film_id = f.film_id " +
+                        "JOIN mpa AS mp ON f.mpa = mp.mpa_id  " +
                         "WHERE EXTRACT(YEAR FROM f.releaseDate) = ?) AS mp "  +
 
                         "WHERE mp.film_id IN " +
                         "(SELECT film_id FROM genre_link " +
                         "WHERE genre_id = ?) " +
-                        "ORDER BY mp.rate DESC " +
+                        "ORDER BY mp.mark DESC " +
                         "LIMIT ?;";
 
-        List<Film> films = jdbcTemplate.query(sql, FilmDbStorage::createFilm, year, genreId, limit);
+        List<Film> films = jdbcTemplate.query(sql, this::createFilmWithMark, year, genreId, count);
         FilmDbStorage.fillGenres(films, jdbcTemplate);
         return FilmDbStorage.fillDirectors(films, jdbcTemplate);
     }

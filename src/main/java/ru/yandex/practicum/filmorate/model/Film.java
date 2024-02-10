@@ -25,10 +25,6 @@ public class Film extends BaseUnit {
     private LocalDate releaseDate;
     @Min(1)
     private int duration;
-    @JsonIgnore
-    @NotNull
-    @Builder.Default
-    private List<Integer> likes = new ArrayList<>();
     private Float mark;
     @NotNull
     private Mpa mpa;
